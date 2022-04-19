@@ -34,5 +34,10 @@ Using Selenium, I created methods to cover the main actions a user performs when
 
 Making use of inheritance, I made a child class for each website I wanted to scrape. These inherited all the methods above and allowed me to make some methods specific to each website. 
 
-The two websites I wanted to scrape were:
-- 
+| Methods specific to LegoScraper | Methods specific to CollocationsScraper |
+| -----                           | -------                                 |
+| get_info_from_java() | create_dict() |
+| create_id() | get_words() |
+| get_info_from_html() | get_infinitives() |
+| collate_info() | get_frequency() |
+| explore_product_ideas() | get_phrases()    |
