@@ -1,3 +1,4 @@
+#%%
 from scraper_module import Scraper
 
 class CollocationsScraper(Scraper):
@@ -40,22 +41,32 @@ class CollocationsScraper(Scraper):
             self.driver.close()
         print(list_infinitives)
     
-    def get_phrases(self, word_class):
-        self.adj_phrase_list = []
-        self.verb_phrase_list = []
+    # def get_phrases(self, word_class):
+    #     adj_phrase_list = []
+    #     verb_phrase_list = []
+    #     new_url= f'{self.url}{word_class}/{self.search_term}'
+    #     self.get_html(new_url)
+    #     sentences = self.soup.findAll('li', {"class": "btn-result list-group-item list-group-item-action"})
+    #     if word_class == 'adj':
+    #         for sentence in sentences:
+    #             adj_phrase_list.append(sentence.text)
+    #             self.info["adj_phrases"] = adj_phrase_list      
+    #     if word_class == 'v':
+    #         for sentence in sentences:
+    #             verb_phrase_list.append(sentence.text)
+    #             self.info["verb_phrases"] = verb_phrase_list
+    def choose_mode(self):
+        pass
+    '''word_class, type_phrase'''
+    def get_phrases(self, word_class, type_phrase):
+        phrase_list = []
         new_url= f'{self.url}{word_class}/{self.search_term}'
         self.get_html(new_url)
         sentences = self.soup.findAll('li', {"class": "btn-result list-group-item list-group-item-action"})
-        if word_class == 'adj':
-            for sentence in sentences:
-                self.adj_phrase_list.append(sentence.text)
-                self.info["adj_phrases"] = self.adj_phrase_list      
-        if word_class == 'v':
-            for sentence in sentences:
-                self.verb_phrase_list.append(sentence.text)
-                self.info["verb_phrases"] = self.verb_phrase_list
- 
-
+        for sentence in sentences:
+            phrase_list.append(sentence.text)
+            self.info[type_phrase] = phrase_list      
+        
     def get_frequency(self, word_class):
         self.adj_frequency_list = []
         self.verb_frequency_list = []
@@ -73,3 +84,5 @@ class CollocationsScraper(Scraper):
             for frequency in words_frequency:
                 self.verb_frequency_list.append(frequency.text)
                 self.info["verb_rank-word-frequency"] = self.verb_frequency_list  
+
+# %%
