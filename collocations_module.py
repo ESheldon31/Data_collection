@@ -20,7 +20,8 @@ class CollocationsScraper(Scraper):
             self.list_words.append(word.text)
         return list_words
 
-    def get_infinitives(self, list_words):
+    def get_infinitives(self):
+        list_words = self.get_words()
         list_infinitives = []
         for word in list_words:
             dictionary_url = f'https://es.thefreedictionary.com/{word}'
