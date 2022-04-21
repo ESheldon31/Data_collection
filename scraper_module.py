@@ -120,8 +120,14 @@ class Scraper:
 
         except NoSuchElementException:
             print('No results found. Try another search term.')
-            pass #don't want it to pass. Want it to start again.
+            self.restart_search()
     
+    def restart_search(self):
+        self.driver.get(self.url)
+        search_term = input('I would like to search for... ')
+        self.search_term = search_term.upper()
+        self.search()
+
     def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
         self.img_list = []
         try:
