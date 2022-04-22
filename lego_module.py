@@ -41,7 +41,7 @@ class LegoScraper(Scraper):
     def collate_info(self):
         self.info = {
             # "id": self.link_id,
-            #     "uuid": self.link_uuid,
+                "uuid": self.uuid_list,
                 "URL": self.link_list,
                 "idea_name": self.name_list,
                 "date": self.date_list,
@@ -55,6 +55,7 @@ class LegoScraper(Scraper):
     def collect_info(self):
         for link in self.link_list:
             self.open_url(link)
+            self.create_uuid()
             #self.get_html(link)
             self.get_name_date_creator(link)
             self.get_supporters_days_remaining()

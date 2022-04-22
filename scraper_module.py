@@ -1,3 +1,4 @@
+#%%
 import selenium
 from selenium.webdriver import Chrome
 from webdriver_manager.chrome import ChromeDriverManager
@@ -38,6 +39,7 @@ class Scraper:
             self.driver = Chrome(ChromeDriverManager().install())
         self.url = url
         self.search_term = search_term.upper()
+        self.uuid_list = []
         self.driver.get(self.url)
    
     def open_url(self, url):
@@ -151,11 +153,15 @@ class Scraper:
             pass
    
 
-    def create_uuid(self, result_list):
-        self.uuid_list = []
-        for i in range(len(result_list)):
-            UUID = str(uuid.uuid4())
-            self.uuid_list.append(UUID)
+    def create_uuid(self):
+        UUID = str(uuid.uuid4())
+        self.uuid_list.append(UUID)
+    
+    # def create_uuid(self, result_list):
+        
+    #     for i in range(len(result_list)):
+    #         UUID = str(uuid.uuid4())
+    #         self.uuid_list.append(UUID)
 
     def get_html(self, url):
         r = requests.get(url)
@@ -182,3 +188,5 @@ class Scraper:
 
 
 
+
+# %%
