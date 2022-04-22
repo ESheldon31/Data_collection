@@ -40,6 +40,7 @@ class Scraper:
         self.url = url
         self.search_term = search_term.upper()
         self.uuid_list = []
+        self.id_list = []
         self.driver.get(self.url)
    
     def open_url(self, url):
@@ -157,6 +158,9 @@ class Scraper:
         UUID = str(uuid.uuid4())
         self.uuid_list.append(UUID)
     
+    # def create_id(self, link):
+    #     ID = self.link_list[link][-12:]
+    #     self.id_list.append(ID)
     # def create_uuid(self, result_list):
         
     #     for i in range(len(result_list)):
@@ -165,7 +169,7 @@ class Scraper:
 
     def get_html(self, url):
         r = requests.get(url)
-        self.soup = bs(r.text, 'html.parser')
+        return r
 
     def find_in_html(self, tag, attribute, attribute_name):
         self.soup.find(tag, {attribute: attribute_name}).text
