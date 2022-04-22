@@ -1,5 +1,7 @@
 #%%
 from scraper_module import Scraper
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 class CollocationsScraper(Scraper):
     def create_dict(self):

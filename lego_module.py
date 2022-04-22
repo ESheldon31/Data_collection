@@ -1,16 +1,22 @@
 from scraper_module import Scraper
+from bs4 import BeautifulSoup as bs
 
 class LegoScraper(Scraper):
-    def get_info_from_java(self):
+    def __init__(self):
+        self.name_list = []
+        self.date_list = []
+        self.creator_list =[]
         self.num_supporters_list = []
         self.num_days_remaining_list = []
+        super().__init__(self)
+    
+    def get_info_from_java(self):
         for link in self.link_list:
             self.driver.get(link)
             soup = bs(self.driver.page_source, 'html.parser')
             numbers = soup.findAll('div', class_= "count")
             self.num_supporters_list.append(numbers[0].text)
             self.num_days_remaining_list.append(numbers[1].text)
-        #print(self.num_supporters_list)
     
     def create_id(self):
         self.id_list = []
@@ -37,6 +43,18 @@ class LegoScraper(Scraper):
 
             creator_name = self.soup.find('a', {'data-axl':"alias"}).text
             self.creator_list.append(creator_name)
+
+    #new 
+    def get_info_from_html(self, link):
+        self.get_html(link)
+        name = self.soup.find('h1').text
+        self.name_list.append(name)
+
+        date = self.soup.find('span', {"class":"published-date"}).text
+        self.date_list.append(date)
+
+        creator_name = self.soup.find('a', {'data-axl':"alias"}).text
+        self.creator_list.append(creator_name)
 
     def collate_info(self):
         self.info = {"id": self.link_id,
