@@ -14,29 +14,35 @@ class LegoScraper(Scraper):
     def get_supporters_days_remaining(self):
         soup = bs(self.driver.page_source, 'html.parser')
         numbers = soup.findAll('div', class_= "count")
-        self.num_supporters_list.append(numbers[0].text)
-        self.num_days_remaining_list.append(numbers[1].text)
+        supporters = numbers[0].text
+        stripped_supporters = supporters.strip()
+        self.num_supporters_list.append(stripped_supporters)
+        days_remaining = numbers[1].text
+        stripped_days_remaining = days_remaining.strip()
+        self.num_days_remaining_list.append(stripped_days_remaining)
     
     def get_name_date_creator(self, link):
         r = self.get_html(link)
         soup = bs(r.text, 'html.parser')
-        name = soup.find('h1').text
-        self.name_list.append(name)
+        self.name = soup.find('h1').text
+        #name = soup.find('h1').text
+        self.name_list.append(self.name)
 
         date = soup.find('span', {"class":"published-date"}).text
         self.date_list.append(date)
 
         creator_name = soup.find('a', {'data-axl':"alias"}).text
-        # stripped_creator_name = creator_name.strip(' ')
+        self.stripped_creator_name = creator_name.strip()
         # stripped_stripped_creator_name = stripped_creator_name.strip('/n')
-        self.creator_list.append(creator_name)
+        # self.stripped_stripped_stripped_creator_name = stripped_stripped_creator_name.strip(' ')
+        self.creator_list.append(self.stripped_creator_name)
+        #print(soup.prettify)
+        #return name, creator_name
 
-        return name, creator_name
-
-    def create_id(self, link):
-        name = self.get_name_date_creator(link)[0]
-        creator_name = self.get_name_date_creator(link)[1]
-        ID = f'{name}.{creator_name}'
+    def create_id(self):
+        # name = self.get_name_date_creator(link)[0]
+        # creator_name = self.get_name_date_creator(link)[1]
+        ID = f'{self.name}.{self.stripped_creator_name}'
         self.id_list.append(ID)
 
     def explore_product_ideas(self, XPATH1, XPATH2):
@@ -63,7 +69,7 @@ class LegoScraper(Scraper):
             self.get_html(link)
             self.get_name_date_creator(link)
             self.get_supporters_days_remaining()
-            self.create_id(link)
+            self.create_id()
             self.create_uuid()
 
 # %%
