@@ -153,7 +153,12 @@ class Scraper:
             self.img_list.append(self.individual_img_list)
             pass
    
-
+    def try_append(list_to_append_to, items_to_append):
+        try:
+            list_to_append_to.append(items_to_append)
+        except:
+            list_to_append_to.append('N/A')
+            
     def create_uuid(self):
         UUID = str(uuid.uuid4())
         self.uuid_list.append(UUID)
