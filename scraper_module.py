@@ -103,15 +103,27 @@ class Scraper:
                 break
             last_height = new_height
 
-    def get_list_links(self, XPATH_container, XPATH_search_results, delay=10):
+    # def get_list_links(self, XPATH_container, XPATH_search_results, delay=10):
+    #     try: 
+    #         self.scroll_down_bottom()
+    #         try:
+    #             self.see_more('//*[@id="search-more"]/a')
+    #             self.infinite_scroll()
+    #             pass
+    #         except NoSuchElementException:
+    #             pass
+    #         search_list = self.container_to_list(XPATH_container, XPATH_search_results)
+    #         self.link_list = []
+    #         for result in search_list:
+    #             link = self.get_link(result, 'a', 'href')
+    #             self.link_list.append(link)
+
+    #     except NoSuchElementException:
+    #         print('No results found. Try another search term.')
+    #         self.restart_search()
+
+    def get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
-            self.scroll_down_bottom()
-            try:
-                self.see_more('//*[@id="search-more"]/a')
-                self.infinite_scroll()
-                pass
-            except NoSuchElementException:
-                pass
             search_list = self.container_to_list(XPATH_container, XPATH_search_results)
             self.link_list = []
             for result in search_list:
@@ -134,11 +146,13 @@ class Scraper:
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
             main_image_link = self.get_link(main_image, 'img', 'src')
             individual_img_list.append(main_image_link)
+            
             thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
             for thumbnail in thumbnail_list:
                 thumbnail_link = self.get_link(thumbnail, 'img', 'src')
                 individual_img_list.append(thumbnail_link)
             self.img_list.append(individual_img_list)  
+        
         except NoSuchElementException:
             individual_img_list.append('N/A')
             self.img_list.append(individual_img_list)
@@ -168,16 +182,20 @@ class Scraper:
         r = requests.get(url)
         return r
 
-    def find_in_html(self, tag, attribute, attribute_name):
-        self.soup.find(tag, {attribute: attribute_name}).text
-
+    def find_in_html(self, url, tag, attribute, attribute_name):
+        r = self.get_html(url)
+        soup = bs(r.text, 'html.parser')
+        if attribute == None:
+            element = soup.find(tag).text
+        else:
+            element = soup.find(tag, {attribute: attribute_name}).text
+        return element
 
     def download_raw_data(self,path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
             os.makedirs(f'{path}/{file_name}')
         with open (f'{path}/{file_name}/data.json', 'w') as f:
             json.dump(self.info, f, indent="")
-
 
     def download_images(self, path='.'):
         if not os.path.exists(f'{path}/{self.search_term}'):

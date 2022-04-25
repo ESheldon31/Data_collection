@@ -1,6 +1,8 @@
 #%%
 from scraper_module import Scraper
 from bs4 import BeautifulSoup as bs
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 class LegoScraper(Scraper):
     def __init__(self, url, search_term, headless=False):
@@ -10,6 +12,16 @@ class LegoScraper(Scraper):
         self.num_supporters_list = []
         self.num_days_remaining_list = []
         super().__init__(url, search_term, headless=False)
+    
+    def get_links(self, XPATH_container, XPATH_search_results):
+        self.scroll_down_bottom()
+        try:
+            self.see_more('//*[@id="search-more"]/a')
+            self.infinite_scroll()
+            pass
+        except NoSuchElementException:
+            pass
+        self.get_list_links(XPATH_container, XPATH_search_results)
     
     def get_supporters_days_remaining(self):
         soup = bs(self.driver.page_source, 'html.parser')
@@ -21,18 +33,15 @@ class LegoScraper(Scraper):
         stripped_days_remaining = days_remaining.strip()
         self.try_append(self.num_days_remaining_list, stripped_days_remaining)
 
-
     '''Uses self and works'''
     def get_name_date_creator(self, link):
-        r = self.get_html(link)
-        soup = bs(r.text, 'html.parser')
-        self.name = soup.find('h1').text
+        self.name = self.find_in_html(link, 'h1', None, None)
         self.try_append(self.name_list, self.name)
 
-        date = soup.find('span', {"class":"published-date"}).text
+        date = self.find_in_html(link, 'span', 'class', 'published-date')
         self.try_append(self.date_list, date)
 
-        creator_name = soup.find('a', {'data-axl':"alias"}).text
+        creator_name = self.find_in_html(link, 'a', 'data-axl', 'alias')
         self.stripped_creator_name = creator_name.strip()
         self.try_append(self.creator_list, self.stripped_creator_name)
     

@@ -10,7 +10,7 @@ if __name__ == '__main__':
         try:
             scraper.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
             scraper.search('//input[@name="query"]')
-            scraper.get_list_links('//*[@id="search_results"]', './div')
+            scraper.get_links('//*[@id="search_results"]', './div')
             scraper.collect_info()
             scraper.collate_info()
             #scraper.download_raw_data()
