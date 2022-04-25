@@ -103,25 +103,6 @@ class Scraper:
                 break
             last_height = new_height
 
-    # def get_list_links(self, XPATH_container, XPATH_search_results, delay=10):
-    #     try: 
-    #         self.scroll_down_bottom()
-    #         try:
-    #             self.see_more('//*[@id="search-more"]/a')
-    #             self.infinite_scroll()
-    #             pass
-    #         except NoSuchElementException:
-    #             pass
-    #         search_list = self.container_to_list(XPATH_container, XPATH_search_results)
-    #         self.link_list = []
-    #         for result in search_list:
-    #             link = self.get_link(result, 'a', 'href')
-    #             self.link_list.append(link)
-
-    #     except NoSuchElementException:
-    #         print('No results found. Try another search term.')
-    #         self.restart_search()
-
     def get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
             search_list = self.container_to_list(XPATH_container, XPATH_search_results)
@@ -197,7 +178,6 @@ class Scraper:
 
     def find_all_in_html(self, tag, attribute, attribute_name):
         soup = self.get_html_including_java()
-        #soup = bs(self.driver.page_source, 'html.parser')
         elements = soup.findAll(tag, {attribute: attribute_name})
         return elements
 

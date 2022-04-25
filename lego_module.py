@@ -22,15 +22,6 @@ class LegoScraper(Scraper):
         except NoSuchElementException:
             pass
         self.get_list_links(XPATH_container, XPATH_search_results)
-    
-    def find_in_html(self, url, tag, attribute, attribute_name):
-        r = self.get_html(url)
-        soup = bs(r.text, 'html.parser')
-        if attribute == None:
-            element = soup.find(tag).text
-        else:
-            element = soup.find(tag, {attribute: attribute_name}).text
-        return element
 
     def get_supporters_days_remaining(self):
         numbers = self.find_all_in_html('div', 'class', 'count')
