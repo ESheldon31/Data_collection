@@ -114,10 +114,8 @@ class Scraper:
                 pass
             search_list = self.container_to_list(XPATH_container, XPATH_search_results)
             self.link_list = []
-# change this to get_link
             for result in search_list:
-                a_tag = result.find_element(By.TAG_NAME, 'a')
-                link = a_tag.get_attribute('href')
+                link = self.get_link(result, 'a', 'href')
                 self.link_list.append(link)
 
         except NoSuchElementException:
@@ -130,49 +128,11 @@ class Scraper:
         self.search_term = search_term.upper()
         self.search()
 
-    # def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
-    #     self.img_list = []
-    #     try:
-    #         for link in self.link_list:
-    #             self.open_url(link)
-    #             individual_img_list = []
-    #             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
-    #             img_tag = main_image.find_element(By.TAG_NAME, 'img')
-    #             img_link = img_tag.get_attribute('src')
-    #             individual_img_list.append(img_link)
-    #             thumbnail_container = self.driver.find_element(By.XPATH, XPATH_thumbnail_container)
-    #             thumbnail_list = thumbnail_container.find_elements(By.XPATH, XPATH_thumbnails)
-    #             for thumbnail in thumbnail_list:
-    #                 img_tag = thumbnail.find_element(By.TAG_NAME, 'img')
-    #                 thumbnail_link = img_tag.get_attribute('src')
-    #                 individual_img_list.append(thumbnail_link)
-    #             self.img_list.append(individual_img_list)  
-    #     except NoSuchElementException:
-    #         self.individual_img_list.append('N/A')
-    #         self.img_list.append(self.individual_img_list)
-    #         pass
-    '''Just removing to test get_link method'''
-    # def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
-    #     individual_img_list = []
-    #     try:
-    #         main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
-    #         main_image_link = self.get_img_link(main_image)
-    #         individual_img_list.append(main_image_link)
-    #         thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
-    #         for thumbnail in thumbnail_list:
-    #             thumbnail_link = self.get_img_link(thumbnail)
-    #             individual_img_list.append(thumbnail_link)
-    #         self.img_list.append(individual_img_list)  
-    #     except NoSuchElementException:
-    #         individual_img_list.append('N/A')
-    #         self.img_list.append(individual_img_list)
-    #         #pass
-
     def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
         individual_img_list = []
         try:
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
-            main_image_link = self.get_img_link(main_image)
+            main_image_link = self.get_link(main_image, 'img', 'src')
             individual_img_list.append(main_image_link)
             thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
             for thumbnail in thumbnail_list:
@@ -188,11 +148,6 @@ class Scraper:
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
         return list_items
-
-    # def get_img_link(self, element):
-    #     img_tag = element.find_element(By.TAG_NAME, 'img')
-    #     img_link = img_tag.get_attribute('src')
-    #     return img_link
    
     def get_link(self, element, tag_name, attribute_name):
         tag = element.find_element(By.TAG_NAME, tag_name)
@@ -208,15 +163,6 @@ class Scraper:
     def create_uuid(self):
         UUID = str(uuid.uuid4())
         self.uuid_list.append(UUID)
-    
-    # def create_id(self, link):
-    #     ID = self.link_list[link][-12:]
-    #     self.id_list.append(ID)
-    # def create_uuid(self, result_list):
-        
-    #     for i in range(len(result_list)):
-    #         UUID = str(uuid.uuid4())
-    #         self.uuid_list.append(UUID)
 
     def get_html(self, url):
         r = requests.get(url)
