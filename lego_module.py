@@ -43,7 +43,7 @@ class LegoScraper(Scraper):
         self.stripped_creator_name = creator_name.strip()
         self.try_append(self.creator_list, self.stripped_creator_name)
     
-    # '''Returns it appended to the lists three times!'''
+    '''Returns it appended to the lists three times!'''
     # def get_name_date_creator(self, link):
     #     r = self.get_html(link)
     #     soup = bs(r.text, 'html.parser')
@@ -58,7 +58,7 @@ class LegoScraper(Scraper):
     #     self.creator_list.append(stripped_creator_name)
     #     return name, stripped_creator_name
 
-    # '''Uses returned items (and works)'''
+    '''Uses returned items (and works)'''
     # def create_id(self, link):
     #     name = self.get_name_date_creator(link)[0]
     #     stripped_creator_name = self.get_name_date_creator(link)[1]
