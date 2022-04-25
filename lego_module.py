@@ -44,6 +44,11 @@ class LegoScraper(Scraper):
         self.stripped_creator_name = creator_name.strip()
         self.try_append(self.creator_list, self.stripped_creator_name)
     
+    '''Uses self (and works)'''
+    def create_id(self):
+        ID = f'{self.name}.{self.stripped_creator_name}'
+        self.id_list.append(ID)
+        
     '''Returns it appended to the lists three times!'''
     # def get_name_date_creator(self, link):
     #     r = self.get_html(link)
@@ -66,10 +71,7 @@ class LegoScraper(Scraper):
     #     ID = f'{name}.{stripped_creator_name}'
     #     self.id_list.append(ID)
     
-    '''Uses self (and works)'''
-    def create_id(self):
-        ID = f'{self.name}.{self.stripped_creator_name}'
-        self.id_list.append(ID)
+
     
     def explore_product_ideas(self, XPATH1, XPATH2):
         self.click_button(XPATH1)
