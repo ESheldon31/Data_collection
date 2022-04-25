@@ -23,11 +23,11 @@ class LegoScraper(Scraper):
         self.try_append(self.num_days_remaining_list, stripped_days_remaining)
         #self.num_days_remaining_list.append(stripped_days_remaining)
     
-    def try_append(list_to_append_to, items_to_append):
-        try:
-            list_to_append_to.append(items_to_append)
-        except:
-            list_to_append_to.append('N/A')
+    # def try_append(list_to_append_to, items_to_append):
+    #     try:
+    #         list_to_append_to.append(items_to_append)
+    #     except:
+    #         list_to_append_to.append('N/A')
 
     '''Uses self and works'''
     def get_name_date_creator(self, link):
@@ -83,8 +83,8 @@ class LegoScraper(Scraper):
                 "date": self.date_list,
                 "creator": self.creator_list,
                 "number_of_supporters": self.num_supporters_list,
-                "number_of_days_remaining": self.num_days_remaining_list}
-                #"image_links": self.img_list}
+                "number_of_days_remaining": self.num_days_remaining_list,
+                "image_links": self.img_list}
         #return self.info
         print(self.info)
 
@@ -96,6 +96,9 @@ class LegoScraper(Scraper):
             self.get_supporters_days_remaining()
             self.create_id()
             self.create_uuid()
+            self.get_img_links(XPATH_main_image='//div[@class="image-sizing-wrapper"]', XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', XPATH_thumbnails='./div')
+
+
 
 # %%
 

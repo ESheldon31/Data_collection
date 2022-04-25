@@ -160,8 +160,9 @@ class Scraper:
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
             main_image_link = self.get_img_link(main_image)
             individual_img_list.append(main_image_link)
-            thumbnail_container = self.driver.find_element(By.XPATH, XPATH_thumbnail_container)
-            thumbnail_list = thumbnail_container.find_elements(By.XPATH, XPATH_thumbnails)
+            thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
+            # thumbnail_container = self.driver.find_element(By.XPATH, XPATH_thumbnail_container)
+            # thumbnail_list = thumbnail_container.find_elements(By.XPATH, XPATH_thumbnails)
             for thumbnail in thumbnail_list:
                 thumbnail_link = self.get_img_link(thumbnail)
                 individual_img_list.append(thumbnail_link)
@@ -170,6 +171,11 @@ class Scraper:
             individual_img_list.append('N/A')
             self.img_list.append(individual_img_list)
             #pass
+
+    def container_to_list(self, XPATH_container, XPATH_items_in_container):
+        container = self.driver.find_element(By.XPATH, XPATH_container)
+        list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
+        return list_items
 
     def get_img_link(self, element):
         img_tag = element.find_element(By.TAG_NAME, 'img')
