@@ -112,11 +112,9 @@ class Scraper:
                 pass
             except NoSuchElementException:
                 pass
-            # container = self.driver.find_element(By.XPATH, XPATH_container)
-            # search_list = container.find_elements(By.XPATH, XPATH_search_results)
             search_list = self.container_to_list(XPATH_container, XPATH_search_results)
             self.link_list = []
-
+# change this to get_link
             for result in search_list:
                 a_tag = result.find_element(By.TAG_NAME, 'a')
                 link = a_tag.get_attribute('href')
@@ -153,7 +151,23 @@ class Scraper:
     #         self.individual_img_list.append('N/A')
     #         self.img_list.append(self.individual_img_list)
     #         pass
-    
+    '''Just removing to test get_link method'''
+    # def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
+    #     individual_img_list = []
+    #     try:
+    #         main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
+    #         main_image_link = self.get_img_link(main_image)
+    #         individual_img_list.append(main_image_link)
+    #         thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
+    #         for thumbnail in thumbnail_list:
+    #             thumbnail_link = self.get_img_link(thumbnail)
+    #             individual_img_list.append(thumbnail_link)
+    #         self.img_list.append(individual_img_list)  
+    #     except NoSuchElementException:
+    #         individual_img_list.append('N/A')
+    #         self.img_list.append(individual_img_list)
+    #         #pass
+
     def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
         individual_img_list = []
         try:
@@ -162,24 +176,29 @@ class Scraper:
             individual_img_list.append(main_image_link)
             thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
             for thumbnail in thumbnail_list:
-                thumbnail_link = self.get_img_link(thumbnail)
+                thumbnail_link = self.get_link(thumbnail, 'img', 'src')
                 individual_img_list.append(thumbnail_link)
             self.img_list.append(individual_img_list)  
         except NoSuchElementException:
             individual_img_list.append('N/A')
             self.img_list.append(individual_img_list)
-            #pass
+
 
     def container_to_list(self, XPATH_container, XPATH_items_in_container):
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
         return list_items
 
-    def get_img_link(self, element):
-        img_tag = element.find_element(By.TAG_NAME, 'img')
-        img_link = img_tag.get_attribute('src')
-        return img_link
+    # def get_img_link(self, element):
+    #     img_tag = element.find_element(By.TAG_NAME, 'img')
+    #     img_link = img_tag.get_attribute('src')
+    #     return img_link
    
+    def get_link(self, element, tag_name, attribute_name):
+        tag = element.find_element(By.TAG_NAME, tag_name)
+        link = tag.get_attribute(attribute_name)
+        return link
+
     def try_append(self, list_to_append_to, items_to_append):
         try:
             list_to_append_to.append(items_to_append)
