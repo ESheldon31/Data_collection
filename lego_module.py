@@ -16,35 +16,60 @@ class LegoScraper(Scraper):
         numbers = soup.findAll('div', class_= "count")
         supporters = numbers[0].text
         stripped_supporters = supporters.strip()
-        self.num_supporters_list.append(stripped_supporters)
+        self.try_append(self.num_supporters_list, stripped_supporters)
+        #self.num_supporters_list.append(stripped_supporters)
         days_remaining = numbers[1].text
         stripped_days_remaining = days_remaining.strip()
-        self.num_days_remaining_list.append(stripped_days_remaining)
+        self.try_append(self.num_days_remaining_list, stripped_days_remaining)
+        #self.num_days_remaining_list.append(stripped_days_remaining)
     
+    def try_append(list_to_append_to, items_to_append):
+        try:
+            list_to_append_to.append(items_to_append)
+        except:
+            list_to_append_to.append('N/A')
+
+    '''Uses self and works'''
     def get_name_date_creator(self, link):
         r = self.get_html(link)
         soup = bs(r.text, 'html.parser')
         self.name = soup.find('h1').text
-        #name = soup.find('h1').text
-        self.name_list.append(self.name)
+        self.try_append(self.name_list, self.name)
 
         date = soup.find('span', {"class":"published-date"}).text
-        self.date_list.append(date)
+        self.try_append(self.date_list, date)
 
         creator_name = soup.find('a', {'data-axl':"alias"}).text
         self.stripped_creator_name = creator_name.strip()
-        # stripped_stripped_creator_name = stripped_creator_name.strip('/n')
-        # self.stripped_stripped_stripped_creator_name = stripped_stripped_creator_name.strip(' ')
-        self.creator_list.append(self.stripped_creator_name)
-        #print(soup.prettify)
-        #return name, creator_name
+        self.try_append(self.creator_list, self.stripped_creator_name)
+    
+    # '''Returns it appended to the lists three times!'''
+    # def get_name_date_creator(self, link):
+    #     r = self.get_html(link)
+    #     soup = bs(r.text, 'html.parser')
+    #     name = soup.find('h1').text
+    #     self.name_list.append(name)
 
+    #     date = soup.find('span', {"class":"published-date"}).text
+    #     self.date_list.append(date)
+
+    #     creator_name = soup.find('a', {'data-axl':"alias"}).text
+    #     stripped_creator_name = creator_name.strip()
+    #     self.creator_list.append(stripped_creator_name)
+    #     return name, stripped_creator_name
+
+    # '''Uses returned items (and works)'''
+    # def create_id(self, link):
+    #     name = self.get_name_date_creator(link)[0]
+    #     stripped_creator_name = self.get_name_date_creator(link)[1]
+    #     ID = f'{name}.{stripped_creator_name}'
+    #     self.id_list.append(ID)
+    
+    '''Uses self (and works)'''
     def create_id(self):
-        # name = self.get_name_date_creator(link)[0]
-        # creator_name = self.get_name_date_creator(link)[1]
         ID = f'{self.name}.{self.stripped_creator_name}'
         self.id_list.append(ID)
-
+    
     def explore_product_ideas(self, XPATH1, XPATH2):
         self.click_button(XPATH1)
         self.click_button(XPATH2)
@@ -71,5 +96,7 @@ class LegoScraper(Scraper):
             self.get_supporters_days_remaining()
             self.create_id()
             self.create_uuid()
+
+# %%
 
 # %%
