@@ -182,6 +182,10 @@ class Scraper:
         r = requests.get(url)
         return r
 
+    def get_html_including_java(self):
+        soup = bs(self.driver.page_source, 'html.parser')
+        return soup
+
     def find_in_html(self, url, tag, attribute, attribute_name):
         r = self.get_html(url)
         soup = bs(r.text, 'html.parser')
@@ -190,6 +194,12 @@ class Scraper:
         else:
             element = soup.find(tag, {attribute: attribute_name}).text
         return element
+
+    def find_all_in_html(self, tag, attribute, attribute_name):
+        soup = self.get_html_including_java()
+        #soup = bs(self.driver.page_source, 'html.parser')
+        elements = soup.findAll(tag, {attribute: attribute_name})
+        return elements
 
     def download_raw_data(self,path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):

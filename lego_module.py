@@ -23,9 +23,17 @@ class LegoScraper(Scraper):
             pass
         self.get_list_links(XPATH_container, XPATH_search_results)
     
+    def find_in_html(self, url, tag, attribute, attribute_name):
+        r = self.get_html(url)
+        soup = bs(r.text, 'html.parser')
+        if attribute == None:
+            element = soup.find(tag).text
+        else:
+            element = soup.find(tag, {attribute: attribute_name}).text
+        return element
+
     def get_supporters_days_remaining(self):
-        soup = bs(self.driver.page_source, 'html.parser')
-        numbers = soup.findAll('div', class_= "count")
+        numbers = self.find_all_in_html('div', 'class', 'count')
         supporters = numbers[0].text
         stripped_supporters = supporters.strip()
         self.try_append(self.num_supporters_list, stripped_supporters)
@@ -87,7 +95,7 @@ class LegoScraper(Scraper):
                 "number_of_supporters": self.num_supporters_list,
                 "number_of_days_remaining": self.num_days_remaining_list,
                 "image_links": self.img_list}
-        #return self.info
+        #return self.info necessary?
         print(self.info)
 
     def collect_info(self):
