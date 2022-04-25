@@ -163,7 +163,7 @@ class Scraper:
         r = requests.get(url)
         return r
 
-    def get_html_including_java(self):
+    def get_html_and_java(self):
         soup = bs(self.driver.page_source, 'html.parser')
         return soup
 
@@ -177,7 +177,7 @@ class Scraper:
         return element
 
     def find_all_in_html(self, tag, attribute, attribute_name):
-        soup = self.get_html_including_java()
+        soup = self.get_html_and_java()
         elements = soup.findAll(tag, {attribute: attribute_name})
         return elements
 
