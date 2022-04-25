@@ -17,17 +17,10 @@ class LegoScraper(Scraper):
         supporters = numbers[0].text
         stripped_supporters = supporters.strip()
         self.try_append(self.num_supporters_list, stripped_supporters)
-        #self.num_supporters_list.append(stripped_supporters)
         days_remaining = numbers[1].text
         stripped_days_remaining = days_remaining.strip()
         self.try_append(self.num_days_remaining_list, stripped_days_remaining)
-        #self.num_days_remaining_list.append(stripped_days_remaining)
-    
-    # def try_append(list_to_append_to, items_to_append):
-    #     try:
-    #         list_to_append_to.append(items_to_append)
-    #     except:
-    #         list_to_append_to.append('N/A')
+
 
     '''Uses self and works'''
     def get_name_date_creator(self, link):

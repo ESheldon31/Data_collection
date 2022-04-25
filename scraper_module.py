@@ -112,9 +112,9 @@ class Scraper:
                 pass
             except NoSuchElementException:
                 pass
-            container = self.driver.find_element(By.XPATH, XPATH_container)
-            search_list = container.find_elements(By.XPATH, XPATH_search_results)
-
+            # container = self.driver.find_element(By.XPATH, XPATH_container)
+            # search_list = container.find_elements(By.XPATH, XPATH_search_results)
+            search_list = self.container_to_list(XPATH_container, XPATH_search_results)
             self.link_list = []
 
             for result in search_list:
@@ -161,8 +161,6 @@ class Scraper:
             main_image_link = self.get_img_link(main_image)
             individual_img_list.append(main_image_link)
             thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
-            # thumbnail_container = self.driver.find_element(By.XPATH, XPATH_thumbnail_container)
-            # thumbnail_list = thumbnail_container.find_elements(By.XPATH, XPATH_thumbnails)
             for thumbnail in thumbnail_list:
                 thumbnail_link = self.get_img_link(thumbnail)
                 individual_img_list.append(thumbnail_link)
