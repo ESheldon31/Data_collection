@@ -41,6 +41,7 @@ class Scraper:
         self.search_term = search_term.upper()
         self.uuid_list = []
         self.id_list = []
+        self.img_list = []
         self.driver.get(self.url)
    
     def open_url(self, url):
@@ -154,9 +155,8 @@ class Scraper:
     #         pass
     
     def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
-        self.img_list = []
+        individual_img_list = []
         try:
-            individual_img_list = []
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
             main_image_link = self.get_img_link(main_image)
             individual_img_list.append(main_image_link)
@@ -167,17 +167,16 @@ class Scraper:
                 individual_img_list.append(thumbnail_link)
             self.img_list.append(individual_img_list)  
         except NoSuchElementException:
-            self.individual_img_list.append('N/A')
-            self.img_list.append(self.individual_img_list)
+            individual_img_list.append('N/A')
+            self.img_list.append(individual_img_list)
             #pass
 
     def get_img_link(self, element):
-        #image = self.driver.find_element(By.XPATH, XPATH_image)
         img_tag = element.find_element(By.TAG_NAME, 'img')
         img_link = img_tag.get_attribute('src')
         return img_link
    
-    def try_append(list_to_append_to, items_to_append):
+    def try_append(self, list_to_append_to, items_to_append):
         try:
             list_to_append_to.append(items_to_append)
         except:
