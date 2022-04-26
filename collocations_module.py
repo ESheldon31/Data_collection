@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 class CollocationsScraper(Scraper):
     def create_dict(self):
         self.info = {
-        # "id": self.link_id,
+          "id": self.id_list,
         #         "uuid": self.link_uuid,
                 "adj_rank-word-frequency": [],
                 "adj_phrases": [],
@@ -21,7 +21,12 @@ class CollocationsScraper(Scraper):
         for word in words:
             self.list_words.append(word.text)
         return list_words
-
+    
+    def create_id(self, word_list, word_class):
+        for i in range(len(word_list)):
+            id = f'{self.search_term}.{word_class}.{i}'
+            self.id_list.append(id)
+            
     def get_infinitives(self):
         list_words = self.get_words()
         list_infinitives = []
@@ -41,20 +46,6 @@ class CollocationsScraper(Scraper):
             self.driver.close()
         self.info["infinitive_verbs"] = list_infinitives
     
-    # def get_phrases(self, word_class):
-    #     adj_phrase_list = []
-    #     verb_phrase_list = []
-    #     new_url= f'{self.url}{word_class}/{self.search_term}'
-    #     self.get_html(new_url)
-    #     sentences = self.soup.findAll('li', {"class": "btn-result list-group-item list-group-item-action"})
-    #     if word_class == 'adj':
-    #         for sentence in sentences:
-    #             adj_phrase_list.append(sentence.text)
-    #             self.info["adj_phrases"] = adj_phrase_list      
-    #     if word_class == 'v':
-    #         for sentence in sentences:
-    #             verb_phrase_list.append(sentence.text)
-    #             self.info["verb_phrases"] = verb_phrase_list
     def choose_mode(self):
         mode_dict = {
             'word_class': ['adj', 'v'],
@@ -69,23 +60,6 @@ class CollocationsScraper(Scraper):
         for sentence in sentences:
             temp_list.append(sentence.text)
         self.info[dict_key] = temp_list      
-        
-    # def get_frequency(self, word_class):
-    #     self.adj_frequency_list = []
-    #     self.verb_frequency_list = []
-    #     new_url = f'{self.url}{word_class}/{self.search_term}?mode=frequency'
-    #     self.driver.get(new_url)
-    #     self.get_html(new_url)
-    #     words_frequency = self.soup.findAll('li', {"class": "btn-result list-group-item list-group-item-action"})
-    #     if word_class == 'adj':
-    #         for frequency in words_frequency:
-    #             str = frequency.text
-    #             stripped_str = str.strip()
-    #             self.adj_frequency_list.append(stripped_str)
-    #             self.info["adj_rank-word-frequency"] = self.adj_frequency_list      
-    #     if word_class == 'v':
-    #         for frequency in words_frequency:
-    #             self.verb_frequency_list.append(frequency.text)
-    #             self.info["verb_rank-word-frequency"] = self.verb_frequency_list  
+
 
 # %%
