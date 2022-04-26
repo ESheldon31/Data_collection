@@ -25,7 +25,7 @@ Using Selenium, I created methods to cover the main actions a user performs when
 | search()      | get_img_links() 
 | click_button() | get_list_links() 
 | scroll_up_top() | download_raw_data() |
-| scroll_down_bottom() | download_images
+| scroll_down_bottom() | download_images()|
 |  accept_cookies() | create_uuid() |
 | infinite_scroll() | switch_frame()     |
 | see_more() | get_html() (uses Requests and BeautifulSoup)|

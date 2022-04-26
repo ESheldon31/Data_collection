@@ -50,26 +50,25 @@ class LegoScraper(Scraper):
         self.id_list.append(ID)
         
     '''Returns it appended to the lists three times!'''
-    # def get_name_date_creator(self, link):
-    #     r = self.get_html(link)
-    #     soup = bs(r.text, 'html.parser')
-    #     name = soup.find('h1').text
-    #     self.name_list.append(name)
+    def get_name_date_creator(self, link):
+        r = self.get_html(link)
+        soup = bs(r.text, 'html.parser')
+        name = soup.find('h1').text
+        self.name_list.append(name)
 
-    #     date = soup.find('span', {"class":"published-date"}).text
-    #     self.date_list.append(date)
+        date = soup.find('span', {"class":"published-date"}).text
+        self.date_list.append(date)
 
-    #     creator_name = soup.find('a', {'data-axl':"alias"}).text
-    #     stripped_creator_name = creator_name.strip()
-    #     self.creator_list.append(stripped_creator_name)
-    #     return name, stripped_creator_name
+        creator_name = soup.find('a', {'data-axl':"alias"}).text
+        stripped_creator_name = creator_name.strip()
+        self.creator_list.append(stripped_creator_name)
+        return name, stripped_creator_name
 
     '''Uses returned items (and works)'''
-    # def create_id(self, link):
-    #     name = self.get_name_date_creator(link)[0]
-    #     stripped_creator_name = self.get_name_date_creator(link)[1]
-    #     ID = f'{name}.{stripped_creator_name}'
-    #     self.id_list.append(ID)
+    def create_id(self, link):
+        name, stripped_creator_name = self.get_name_date_creator(link)
+        ID = f'{name}.{stripped_creator_name}'
+        self.id_list.append(ID)
     
 
     
@@ -101,7 +100,16 @@ class LegoScraper(Scraper):
             self.create_uuid()
             self.get_img_links(XPATH_main_image='//div[@class="image-sizing-wrapper"]', XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', XPATH_thumbnails='./div')
 
-
+    def scraping_now(self):
+        try:
+            self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
+            self.search('//input[@name="query"]')
+            self.get_links('//*[@id="search_results"]', './div')
+            self.collect_info()
+            self.collate_info()
+            #self.download_raw_data()
+            #self.download_images()
+        finally: self.quit()
 
 # %%
 

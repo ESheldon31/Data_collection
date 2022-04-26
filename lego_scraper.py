@@ -7,18 +7,7 @@ if __name__ == '__main__':
         #search_term = input('I would like to search for... ')
         search_term = 'violin'
         scraper = LegoScraper('https://ideas.lego.com', search_term)
-        try:
-            scraper.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            scraper.search('//input[@name="query"]')
-            scraper.get_links('//*[@id="search_results"]', './div')
-            scraper.collect_info()
-            scraper.collate_info()
-            #scraper.download_raw_data()
-            #scraper.download_images()
-        finally: scraper.quit()
-
-
-
+        scraper.scraping_now()
 
     web_scraper_lego()
     
