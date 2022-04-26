@@ -30,14 +30,20 @@ Using Selenium, I created methods to cover the main actions a user performs when
 | infinite_scroll() | switch_frame()     |
 | see_more() | get_html() (uses Requests and BeautifulSoup)|
 | next_page() | find_in_html() (uses Requests and BeautifulSoup)|
-| quit() | |
+| quit() | restart_search()|
+| | container_to_list() |
+| | try_append() |
+| | get_html_and_java() |
+| | find_all_in_html() |
 
 Making use of inheritance, I made a child class for each website I wanted to scrape. These inherited all the methods above and allowed me to make some methods specific to each website. 
 
 | Methods specific to LegoScraper | Methods specific to CollocationsScraper |
 | -----                           | -------                                 |
-| get_info_from_java() | create_dict() |
+| get_links() | create_dict() |
 | create_id() | get_words() |
-| get_info_from_html() | get_infinitives() |
-| collate_info() | get_frequency() |
-| explore_product_ideas() | get_phrases()    |
+| get_supporters_days_remaining() | get_infinitives() |
+| get_name_date_creator() | get_phrases()  |
+collect_info() | get_frequency() |
+| explore_product_ideas() |    |
+| collate_info() | |
