@@ -42,6 +42,7 @@ class Scraper:
         self.uuid_list = []
         self.id_list = []
         self.img_list = []
+        self.info = {}
         self.driver.get(self.url)
    
     def open_url(self, url):
@@ -155,9 +156,14 @@ class Scraper:
         except:
             list_to_append_to.append('N/A')
 
-    def create_uuid(self):
+    # def create_uuid(self):
+    #     UUID = str(uuid.uuid4())
+    #     self.uuid_list.append(UUID)
+    
+    @staticmethod
+    def create_uuid():
         UUID = str(uuid.uuid4())
-        self.uuid_list.append(UUID)
+        return UUID
 
     def get_html(self, url):
         r = requests.get(url)
@@ -181,7 +187,7 @@ class Scraper:
         elements = soup.findAll(tag, {attribute: attribute_name})
         return elements
 
-    def download_raw_data(self,path='.', file_name='raw_data'):
+    def download_raw_data(self, path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
             os.makedirs(f'{path}/{file_name}')
         with open (f'{path}/{file_name}/data.json', 'w') as f:
