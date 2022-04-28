@@ -23,32 +23,43 @@ class LegoScraper(Scraper):
             pass
         self.get_list_links(XPATH_container, XPATH_search_results)
 
-    def get_supporters_days_remaining(self):
+    def get_figures(self):
         numbers = self.find_all_in_html('div', 'class', 'count')
-        supporters = numbers[0].text
+        return numbers
+    
+    def get_supporters(self):
+        supporters = (self.get_figures())[0].text
         stripped_supporters = supporters.strip()
-        self.try_append(self.num_supporters_list, stripped_supporters)
-        days_remaining = numbers[1].text
+        return stripped_supporters
+
+    def get_days_remaining(self):
+        days_remaining = (self.get_figures())[1].text
         stripped_days_remaining = days_remaining.strip()
-        self.try_append(self.num_days_remaining_list, stripped_days_remaining)
+        return stripped_days_remaining
 
-    def get_name_date_creator(self, link):
+    def get_name(self, link):
         name = self.find_in_html(link, 'h1', None, None)
-        self.try_append(self.name_list, name)
+        return name
 
+    def get_date(self, link):
         date = self.find_in_html(link, 'span', 'class', 'published-date')
-        self.try_append(self.date_list, date)
+        return date
 
+    def get_creator_name(self, link):
         creator_name = self.find_in_html(link, 'a', 'data-axl', 'alias')
         stripped_creator_name = creator_name.strip()
-        self.try_append(self.creator_list, stripped_creator_name)
+        return stripped_creator_name
 
-        return name, stripped_creator_name
-        
     def create_id(self, link):
-        name, stripped_creator_name = self.get_name_date_creator(link)
+        name = self.get_name(link)
+        stripped_creator_name = self.get_creator_name(link)
         ID = f'{name}.{stripped_creator_name}'
-        self.id_list.append(ID)
+        return ID
+
+    # def create_id(self, link):
+    #     name, stripped_creator_name = self.get_name_date_creator(link)
+    #     ID = f'{name}.{stripped_creator_name}'
+    #     self.id_list.append(ID)
     
     def explore_product_ideas(self, XPATH1, XPATH2):
         self.click_button(XPATH1)
@@ -65,17 +76,20 @@ class LegoScraper(Scraper):
                 "number_of_supporters": self.num_supporters_list,
                 "number_of_days_remaining": self.num_days_remaining_list,
                 "image_links": self.img_list}
-        #return self.info necessary?
         print(self.info)
 
     def collect_info(self):
         for link in self.link_list:
             self.open_url(link)
             self.get_html(link)
-            self.get_name_date_creator(link)
-            self.get_supporters_days_remaining()
-            self.create_id()
-            self.create_uuid()
+            #self.get_name_date_creator(link)
+            self.name_list.append(self.get_name(link))
+            self.date_list.append(self.get_date(link))
+            self.creator_list.append(self.get_creator_name(link))
+            self.num_supporters_list.append(self.get_supporters())
+            self.num_days_remaining_list.append(self.get_days_remaining())
+            self.id_list.append(self.create_id(link))
+            self.uuid_list.append(self.create_uuid())
             self.get_img_links(XPATH_main_image='//div[@class="image-sizing-wrapper"]', XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', XPATH_thumbnails='./div')
 
     def scraping_now(self):
