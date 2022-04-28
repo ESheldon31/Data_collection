@@ -39,6 +39,7 @@ class Scraper:
             self.driver = Chrome(ChromeDriverManager().install())
         self.url = url
         self.search_term = search_term.upper()
+        self.link_list = []
         self.uuid_list = []
         self.id_list = []
         self.img_list = []
@@ -107,7 +108,7 @@ class Scraper:
     def get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
             search_list = self.container_to_list(XPATH_container, XPATH_search_results)
-            self.link_list = []
+            
             for result in search_list:
                 link = self.get_link(result, 'a', 'href')
                 self.link_list.append(link)
@@ -156,10 +157,6 @@ class Scraper:
         except:
             list_to_append_to.append('N/A')
 
-    # def create_uuid(self):
-    #     UUID = str(uuid.uuid4())
-    #     self.uuid_list.append(UUID)
-    
     @staticmethod
     def create_uuid():
         UUID = str(uuid.uuid4())
@@ -200,7 +197,6 @@ class Scraper:
         for i, lst in enumerate(self.img_list):
             for j, img in enumerate(lst):
                 urllib.request.urlretrieve(img, f'{path}/{self.search_term}/{self.search_term}{i}.{j}.webp')
-
 
 
 

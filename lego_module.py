@@ -12,7 +12,17 @@ class LegoScraper(Scraper):
         self.num_supporters_list = []
         self.num_days_remaining_list = []
         super().__init__(url, search_term, headless=False)
-    
+        self.info = {
+                "id": self.id_list,
+                "uuid": self.uuid_list,
+                "URL": self.link_list,
+                "idea_name": self.name_list,
+                "date": self.date_list,
+                "creator": self.creator_list,
+                "number_of_supporters": self.num_supporters_list,
+                "number_of_days_remaining": self.num_days_remaining_list,
+                "image_links": self.img_list}
+                
     def get_links(self, XPATH_container, XPATH_search_results):
         self.scroll_down_bottom()
         try:
@@ -66,16 +76,6 @@ class LegoScraper(Scraper):
         self.click_button(XPATH2)
 
     def collate_info(self):
-        self.info = {
-                "id": self.id_list,
-                "uuid": self.uuid_list,
-                "URL": self.link_list,
-                "idea_name": self.name_list,
-                "date": self.date_list,
-                "creator": self.creator_list,
-                "number_of_supporters": self.num_supporters_list,
-                "number_of_days_remaining": self.num_days_remaining_list,
-                "image_links": self.img_list}
         print(self.info)
 
     def collect_info(self):
