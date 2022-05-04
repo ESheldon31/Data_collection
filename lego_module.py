@@ -99,7 +99,7 @@ class LegoScraper(Scraper):
             self.get_links('//*[@id="search_results"]', './div')
             self.collect_info()
             self.collate_info()
-            #self.download_raw_data()
+            self.download_raw_data()
             #self.download_images()
         finally: self.quit()
 
