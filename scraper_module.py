@@ -129,13 +129,13 @@ class Scraper:
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
             main_image_link = self.get_link(main_image, 'img', 'src')
             individual_img_list.append(main_image_link)
-            
-            thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
-            for thumbnail in thumbnail_list:
-                thumbnail_link = self.get_link(thumbnail, 'img', 'src')
-                individual_img_list.append(thumbnail_link)
-            self.img_list.append(individual_img_list)  
-        
+            if XPATH_thumbnail_container != None:
+                thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
+                for thumbnail in thumbnail_list:
+                    thumbnail_link = self.get_link(thumbnail, 'img', 'src')
+                    individual_img_list.append(thumbnail_link)
+                self.img_list.append(individual_img_list)  
+            else: pass #necessary?
         except NoSuchElementException:
             individual_img_list.append('N/A')
             self.img_list.append(individual_img_list)
@@ -151,6 +151,7 @@ class Scraper:
         link = tag.get_attribute(attribute_name)
         return link
 
+    #ToDo: change/delete this
     def try_append(self, list_to_append_to, items_to_append):
         try:
             list_to_append_to.append(items_to_append)
