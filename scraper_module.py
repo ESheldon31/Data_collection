@@ -1,4 +1,5 @@
 #%%
+import dataclasses
 import selenium
 from selenium.webdriver import Chrome
 from webdriver_manager.chrome import ChromeDriverManager
@@ -23,6 +24,7 @@ import json
 import csv
 import uuid
 import urllib
+from data_template import Data
 
 
 '''
@@ -39,11 +41,11 @@ class Scraper:
             self.driver = Chrome(ChromeDriverManager().install())
         self.url = url
         self.search_term = search_term.upper()
-        self.link_list = []
-        self.uuid_list = []
-        self.id_list = []
-        self.img_list = []
-        self.info = {}
+        #self.link_list = []
+        # self.uuid_list = []
+        # self.id_list = []
+        # self.img_list = []
+        # self.info = {}
         self.driver.get(self.url)
    
     def open_url(self, url):
@@ -68,21 +70,21 @@ class Scraper:
     def accept_cookies(self, frame_id, XPATH):
         try:
             if frame_id!=None:
-                self.switch_frame(frame_id)
+                self._switch_frame(frame_id)
             else: pass
-            self.wait_for(XPATH)
+            self._wait_for(XPATH)
             self.click_button(XPATH)
         except NoSuchElementException:
             pass
 
-    def wait_for(self, XPATH, delay = 10):
+    def _wait_for(self, XPATH, delay = 10):
         try:    
             WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
         except TimeoutException:
             print('Loading took too long. Timeout occurred.')
 
-    def switch_frame(self, frame_id):
-        self.wait_for(frame_id)
+    def _switch_frame(self, frame_id):
+        self._wait_for(frame_id)
         self.driver.switchTo().frame(frame_id)
 
     def quit(self):
@@ -104,20 +106,21 @@ class Scraper:
             if new_height == last_height:
                 break
             last_height = new_height
-
+    
     def get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
-            search_list = self.container_to_list(XPATH_container, XPATH_search_results)
-            
+            search_list = self._container_to_list(XPATH_container, XPATH_search_results)
+            link_list = []
             for result in search_list:
-                link = self.get_link(result, 'a', 'href')
-                self.link_list.append(link)
+                link = self._get_link(result, 'a', 'href')
+                link_list.append(link)
+            return link_list
 
         except NoSuchElementException:
             print('No results found. Try another search term.')
-            self.restart_search()
-    
-    def restart_search(self):
+            self._restart_search()
+
+    def _restart_search(self):
         self.driver.get(self.url)
         search_term = input('I would like to search for... ')
         self.search_term = search_term.upper()
@@ -125,28 +128,29 @@ class Scraper:
 
     def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
         individual_img_list = []
+        img_list = []
         try:
             main_image = self.driver.find_element(By.XPATH, XPATH_main_image)
-            main_image_link = self.get_link(main_image, 'img', 'src')
+            main_image_link = self._get_link(main_image, 'img', 'src')
             individual_img_list.append(main_image_link)
             if XPATH_thumbnail_container != None:
-                thumbnail_list = self.container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
+                thumbnail_list = self._container_to_list(XPATH_thumbnail_container, XPATH_thumbnails)
                 for thumbnail in thumbnail_list:
-                    thumbnail_link = self.get_link(thumbnail, 'img', 'src')
+                    thumbnail_link = self._get_link(thumbnail, 'img', 'src')
                     individual_img_list.append(thumbnail_link)
-                self.img_list.append(individual_img_list)  
-            else: pass #necessary?
+                img_list.append(individual_img_list)  
         except NoSuchElementException:
             individual_img_list.append('N/A')
-            self.img_list.append(individual_img_list)
+            img_list.append(individual_img_list)
+        return img_list
 
 
-    def container_to_list(self, XPATH_container, XPATH_items_in_container):
+    def _container_to_list(self, XPATH_container, XPATH_items_in_container):
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
         return list_items
    
-    def get_link(self, element, tag_name, attribute_name):
+    def _get_link(self, element, tag_name, attribute_name):
         tag = element.find_element(By.TAG_NAME, tag_name)
         link = tag.get_attribute(attribute_name)
         return link
@@ -163,16 +167,16 @@ class Scraper:
         UUID = str(uuid.uuid4())
         return UUID
 
-    def get_html(self, url):
+    def _get_html(self, url):
         r = requests.get(url)
         return r
 
-    def get_html_and_java(self):
+    def _get_html_and_java(self):
         soup = bs(self.driver.page_source, 'html.parser')
         return soup
 
     def find_in_html(self, url, tag, attribute, attribute_name):
-        r = self.get_html(url)
+        r = self._get_html(url)
         soup = bs(r.text, 'html.parser')
         if attribute == None:
             element = soup.find(tag).text
@@ -181,21 +185,27 @@ class Scraper:
         return element
 
     def find_all_in_html(self, tag, attribute, attribute_name):
-        soup = self.get_html_and_java()
+        soup = self._get_html_and_java()
         elements = soup.findAll(tag, {attribute: attribute_name})
         return elements
 
-    def download_raw_data(self, path='.', file_name='raw_data'):
+    # def download_raw_data(self, path='.', file_name='raw_data'):
+    #     if not os.path.exists(f'{path}/{file_name}'):
+    #         os.makedirs(f'{path}/{file_name}')
+    #     with open (f'{path}/{file_name}/data.json', 'w') as f:
+    #         json.dump(self.info, f, indent="")
+    @staticmethod
+    def download_raw_data(data_class, path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
             os.makedirs(f'{path}/{file_name}')
         with open (f'{path}/{file_name}/data.json', 'w') as f:
-            json.dump(self.info, f, indent="")
+            json.dump(dataclasses.asdict(data_class), f, indent="")
 
-    def download_images(self, path='.'):
+    def download_images(self, img_list, path='.'):
         if not os.path.exists(f'{path}/{self.search_term}'):
             os.makedirs(f'{path}/{self.search_term}')
 
-        for i, lst in enumerate(self.img_list):
+        for i, lst in enumerate(img_list):
             for j, img in enumerate(lst):
                 urllib.request.urlretrieve(img, f'{path}/{self.search_term}/{self.search_term}{i}.{j}.webp')
 

@@ -1,28 +1,14 @@
 #%%
-from scraper_module import Scraper
+from scraper_return_module import Scraper
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from data_template import LegoData
 
 class LegoScraper(Scraper):
     def __init__(self, url, search_term, headless=False):
-        self.name_list = []
-        self.date_list = []
-        self.creator_list =[]
-        self.num_supporters_list = []
-        self.num_days_remaining_list = []
         super().__init__(url, search_term, headless=False)
-        self.info = {
-                "id": self.id_list,
-                "uuid": self.uuid_list,
-                "URL": self.link_list,
-                "idea_name": self.name_list,
-                "date": self.date_list,
-                "creator": self.creator_list,
-                "number_of_supporters": self.num_supporters_list,
-                "number_of_days_remaining": self.num_days_remaining_list,
-                "image_links": self.img_list}
-                
+
     def get_links(self, XPATH_container, XPATH_search_results):
         self.scroll_down_bottom()
         try:
@@ -31,7 +17,8 @@ class LegoScraper(Scraper):
             pass
         except NoSuchElementException:
             pass
-        self.get_list_links(XPATH_container, XPATH_search_results)
+        list_links = self.get_list_links(XPATH_container, XPATH_search_results)
+        return list_links
 
     def get_figures(self):
         numbers = self.find_all_in_html('div', 'class', 'count')
@@ -65,42 +52,47 @@ class LegoScraper(Scraper):
         stripped_creator_name = self.get_creator_name(link)
         ID = f'{name}.{stripped_creator_name}'
         return ID
-
-    # def create_id(self, link):
-    #     name, stripped_creator_name = self.get_name_date_creator(link)
-    #     ID = f'{name}.{stripped_creator_name}'
-    #     self.id_list.append(ID)
     
     def explore_product_ideas(self, XPATH1, XPATH2):
         self.click_button(XPATH1)
         self.click_button(XPATH2)
 
-    def collate_info(self):
-        print(self.info)
-
     def collect_info(self):
-        for link in self.link_list:
+        link_list = self.get_links('//*[@id="search_results"]', './div')
+        lego_data = LegoData(
+            uuid_list=[], 
+            id_list=[], 
+            img_list=[], 
+            date_list=[], 
+            creator_list=[], 
+            name_list= [], 
+            num_days_remaining_list=[], 
+            num_supporters_list=[],
+            link_list=None)
+
+        for link in link_list:
             self.open_url(link)
-            self.get_html(link)
-            #self.get_name_date_creator(link)
-            self.name_list.append(self.get_name(link))
-            self.date_list.append(self.get_date(link))
-            self.creator_list.append(self.get_creator_name(link))
-            self.num_supporters_list.append(self.get_supporters())
-            self.num_days_remaining_list.append(self.get_days_remaining())
-            self.id_list.append(self.create_id(link))
-            self.uuid_list.append(self.create_uuid())
-            self.get_img_links(XPATH_main_image='//div[@class="image-sizing-wrapper"]', XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', XPATH_thumbnails='./div')
+            self._get_html(link)
+            lego_data.name_list.append(self.get_name(link))
+            lego_data.date_list.append(self.get_date(link))
+            lego_data.creator_list.append(self.get_creator_name(link))
+            lego_data.num_supporters_list.append(self.get_supporters())
+            lego_data.num_days_remaining_list.append(self.get_days_remaining())
+            lego_data.id_list.append(self.create_id(link))
+            lego_data.uuid_list.append(self.create_uuid())
+            lego_data.img_list = self.get_img_links(
+                XPATH_main_image='//div[@class="image-sizing-wrapper"]', 
+                XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', 
+                XPATH_thumbnails='./div')
+        return(lego_data)
 
     def scraping_now(self):
         try:
             self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
             self.search('//input[@name="query"]')
-            self.get_links('//*[@id="search_results"]', './div')
-            self.collect_info()
-            self.collate_info()
-            self.download_raw_data()
-            #self.download_images()
+            lego_data = self.collect_info()
+            self.download_raw_data(lego_data)
+            self.download_images(lego_data)
         finally: self.quit()
 
 # %%
