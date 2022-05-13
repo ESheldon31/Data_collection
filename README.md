@@ -1,7 +1,7 @@
 # Data Collection Pipeline
 
 ## Overview
-In this project, I will make a Data Collection pipeline, in which tabular data and images are collected from a website and stored in a relational database and data lake, respectively, in the cloud. After testing, I will use Docker to containerise the application and deploy it to an EC2 instance. Using GitHub Actions, I will set up a CI/CD pipeline to push a new Docker image when any chances are made to the code. The container will be monitored with Prometheus and I will create dashboards to visualise those metrics using Grafana.
+In this project, I will make a Data Collection pipeline, in which tabular data and images are collected from a website and stored in a relational database and data lake, respectively, in the cloud. After testing, I will use Docker to containerise the application and deploy it to an EC2 instance, to make it scalable. Using GitHub Actions, I will set up a CI/CD pipeline to push a new Docker image when any chances are made to the code. The container will be monitored with Prometheus and I will create dashboards to visualise those metrics using Grafana.
 
 <img width="1565" alt="image" src="https://user-images.githubusercontent.com/91407498/168278035-656785a4-bcad-4d27-9b41-23f25a3402aa.png">
 
