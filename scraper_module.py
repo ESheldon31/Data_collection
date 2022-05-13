@@ -123,32 +123,9 @@ class Scraper:
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
-    # @no_element_exception_handler
-    # def accept_cookies(self, frame_id, XPATH):
-    #     try:
-    #         if frame_id!=None:
-    #             self._switch_frame(frame_id)
-    #         else: pass
-    #         #self._wait_for(XPATH)
-    #         self.click_button(XPATH)
-    #     except NoSuchElementException:
-    #         pass
-    
     @no_element_exception_handler
-    def accept_cookies(self, frame_id, XPATH):
-        if frame_id!=None:
-            self._switch_frame(frame_id)
-        else: pass
+    def accept_cookies(self, XPATH):
         self.click_button(XPATH)
-    
-
-    # def _wait_for(self, XPATH, click=True, delay=10):
-    #     try:    
-    #         WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
-    #         if click == True:
-    #             self.click_button(XPATH)
-    #     except TimeoutException:
-    #         pass
 
     def _switch_frame(self, frame_id):
         self._wait_for(frame_id)
