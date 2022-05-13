@@ -26,6 +26,11 @@ import uuid
 import urllib
 from data_template import Data
 
+# ToDo: add decorator to elegantly handle error for element not found
+# ToDo: add details of public methods for class
+# ToDo: finish docstrings for methods
+# ToDo: add type hinting
+
 
 '''
 This module contains the scraper base class and its methods.
@@ -49,7 +54,8 @@ class Scraper:
 
     '''
 
-    # ToDo: add details of public methods
+
+
 
     def __init__(self, url, search_term, headless=False):
         ''' 
@@ -236,7 +242,7 @@ class Scraper:
     #         os.makedirs(f'{path}/{file_name}')
     #     with open (f'{path}/{file_name}/data.json', 'w') as f:
     #         json.dump(self.info, f, indent="")
-    
+
     @staticmethod
     def download_raw_data(data_class, path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
