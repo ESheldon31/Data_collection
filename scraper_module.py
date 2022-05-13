@@ -12,7 +12,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException #, TimeoutException
 from selenium.webdriver.chrome.options import Options
 #from time import sleep, time
 import time
@@ -123,18 +123,25 @@ class Scraper:
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
+    # @no_element_exception_handler
+    # def accept_cookies(self, frame_id, XPATH):
+    #     try:
+    #         if frame_id!=None:
+    #             self._switch_frame(frame_id)
+    #         else: pass
+    #         #self._wait_for(XPATH)
+    #         self.click_button(XPATH)
+    #     except NoSuchElementException:
+    #         pass
+    
     @no_element_exception_handler
     def accept_cookies(self, frame_id, XPATH):
-        try:
-            if frame_id!=None:
-                self._switch_frame(frame_id)
-            else: pass
-            #self._wait_for(XPATH)
-            self.click_button(XPATH)
-        except NoSuchElementException:
-            pass
+        if frame_id!=None:
+            self._switch_frame(frame_id)
+        else: pass
+        self.click_button(XPATH)
     
-    # @no_element_exception_handler
+
     # def _wait_for(self, XPATH, click=True, delay=10):
     #     try:    
     #         WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
@@ -207,7 +214,7 @@ class Scraper:
             img_list.append(individual_img_list)
         return img_list
 
-
+    @no_element_exception_handler
     def _container_to_list(self, XPATH_container, XPATH_items_in_container):
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
