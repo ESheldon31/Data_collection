@@ -97,12 +97,22 @@ class Scraper:
         '''
         self.driver.get(url)
     
+    def no_element_exception_handler(func):
+        def wrapper(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except NoSuchElementException:
+                print(f'{func.__name__} couldn\'t find the element. Check your XPATH.')
+        return wrapper
+
+    @no_element_exception_handler
     def search(self, XPATH):
         search_bar = self.driver.find_element(By.XPATH, XPATH)
         search_bar.click()
         search_bar.send_keys(self.search_term)
         search_bar.send_keys(u'\ue007')
-
+    
+    @no_element_exception_handler
     def click_button(self, XPATH):
         button = self.driver.find_element(By.XPATH, XPATH)
         button.click()
@@ -113,24 +123,25 @@ class Scraper:
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
+    @no_element_exception_handler
     def accept_cookies(self, frame_id, XPATH):
         try:
             if frame_id!=None:
                 self._switch_frame(frame_id)
             else: pass
-            self._wait_for(XPATH)
+            #self._wait_for(XPATH)
             self.click_button(XPATH)
         except NoSuchElementException:
             pass
-
-    def _wait_for(self, XPATH, click=True, delay=10):
-        try:    
-            WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
-            if click == True:
-                self.click_button(XPATH)
-        except TimeoutException:
-            #print('Loading took too long. Timeout occurred.')
-            pass
+    
+    # @no_element_exception_handler
+    # def _wait_for(self, XPATH, click=True, delay=10):
+    #     try:    
+    #         WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
+    #         if click == True:
+    #             self.click_button(XPATH)
+    #     except TimeoutException:
+    #         pass
 
     def _switch_frame(self, frame_id):
         self._wait_for(frame_id)
@@ -261,6 +272,7 @@ class Scraper:
         for i, lst in enumerate(img_list):
             for j, img in enumerate(lst):
                 urllib.request.urlretrieve(img, f'{path}/{self.search_term}/{self.search_term}{i}.{j}.webp')
+
 
 
 

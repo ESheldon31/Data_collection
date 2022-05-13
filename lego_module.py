@@ -194,10 +194,10 @@ class LegoScraper(Scraper):
         '''
         try:
             self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            self.search('//input[@name="query"]')
+            self.search('//input[@name="que¡ry"]')
             lego_data = self.collect_info()
             self.download_raw_data(lego_data)
-            self.download_images(lego_data)
+            self.download_images(lego_data.img_list)
         finally: self.quit()
 
 # %%
