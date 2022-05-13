@@ -1,9 +1,12 @@
 # Data Collection Pipeline
 
-### Overview
-In this project, I have created a general webscraper module that uses Selenium and Requests to extract data from a website. This is then stored in an AWS RDS database and accessed using SQLAlchemy and PostgreSQL. 
+## Overview
+In this project, I will make a Data Collection pipeline, in which tabular data and images are collected from a website and stored in a relational database and data lake, respectively, in the cloud. After testing, I will use Docker to containerise the application and deploy it to an EC2 instance. Using GitHub Actions, I will set up a CI/CD pipeline to push a new Docker image when any chances are made to the code. The container will be monitored with Prometheus and I wil create dashboards to visualise those metrics using Grafana.
 
-I will perform unit testing and integration testing before using Docker to containerise the application and deploy it to an EC2 instance. Using GitHub Actions, I will set up a CI/CD pipeline to push a new Docker image. I will monitor the container using Prometheus and create dashboards to visualise those metrics using Grafana.
+<img width="1565" alt="image" src="https://user-images.githubusercontent.com/91407498/168278035-656785a4-bcad-4d27-9b41-23f25a3402aa.png">
+
+## Progress to date
+I have created a general webscraper module that uses Selenium and Requests to extract data from a website. I have also made two further modules, which contain scrapers for particular websites (see below for more detail). Currently the data is collected and stored locally in a json file, but once unit and integration testing is complete, this will be uploaded to AWS. 
 
 ## Websites
 The two websites I wanted to scrape were:
@@ -26,7 +29,7 @@ Using Selenium, I created methods to cover the main actions a user performs when
 | click_button() | get_list_links() 
 | scroll_up_top() | download_raw_data() |
 | scroll_down_bottom() | download_images()|
-|  accept_cookies() | create_uuid() |
+|  accept_cookies() | create_uuid() | 
 | infinite_scroll() | switch_frame()     |
 | see_more() | get_html() (uses Requests and BeautifulSoup)|
 | next_page() | find_in_html() (uses Requests and BeautifulSoup)|
@@ -46,4 +49,6 @@ Making use of inheritance, I made a child class for each website I wanted to scr
 | get_name_date_creator() | get_phrases()  |
 collect_info() | get_frequency() |
 | explore_product_ideas() |    |
-| collate_info() | |
+
+Data is collected from the website and initially stored in a DataClass. This instance of the DataClass is then written to a JSON file.
+
