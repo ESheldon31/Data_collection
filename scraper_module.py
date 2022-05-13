@@ -29,10 +29,42 @@ from data_template import Data
 
 '''
 This module contains the scraper base class and its methods.
+
 '''
 
 class Scraper:
+    '''
+    A class that contains generalised methods for scraping any website.
+    
+    ...
+    
+    Attributes 
+    --------------
+    
+    url : str
+        the starting url of the website you would like to scrape
+    search_term : str
+        the item you want to search for
+    driver : the Selenium Chrome webdriver that automatically navegates the webpage
+
+    '''
+
+    # ToDo: add details of public methods
+
     def __init__(self, url, search_term, headless=False):
+        ''' 
+        Constructs all the necessary attributes
+
+        Parameters
+        -------------
+        url : str
+            the starting url of the website you would like to scrape
+        search_term : str
+            the item you want to search for
+        headless : bool
+            sets the webdrive to run in headless mode. Default = False
+
+        '''
         options = Options()
         if headless:
             options.add_argument('--headless')
@@ -41,14 +73,18 @@ class Scraper:
             self.driver = Chrome(ChromeDriverManager().install())
         self.url = url
         self.search_term = search_term.upper()
-        #self.link_list = []
-        # self.uuid_list = []
-        # self.id_list = []
-        # self.img_list = []
-        # self.info = {}
         self.driver.get(self.url)
    
     def open_url(self, url):
+        '''
+        opens the webpage for the url passed as a parameter
+        
+        Parameters
+        -------------
+        url : str
+            url of the webpage to be opened
+
+        '''
         self.driver.get(url)
     
     def search(self, XPATH):
@@ -77,15 +113,21 @@ class Scraper:
         except NoSuchElementException:
             pass
 
-    def _wait_for(self, XPATH, delay = 10):
+    def _wait_for(self, XPATH, click=True, delay=10):
         try:    
             WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
+            if click == True:
+                self.click_button(XPATH)
         except TimeoutException:
-            print('Loading took too long. Timeout occurred.')
+            #print('Loading took too long. Timeout occurred.')
+            pass
 
     def _switch_frame(self, frame_id):
         self._wait_for(frame_id)
         self.driver.switchTo().frame(frame_id)
+   
+    def close_pop_up(self, XPATH):
+        self._wait_for(XPATH)
 
     def quit(self):
         self.driver.quit()
@@ -155,7 +197,7 @@ class Scraper:
         link = tag.get_attribute(attribute_name)
         return link
 
-    #ToDo: change/delete this
+    #ToDo: make this decorator and apply to relevant methods
     def try_append(self, list_to_append_to, items_to_append):
         try:
             list_to_append_to.append(items_to_append)
@@ -194,6 +236,7 @@ class Scraper:
     #         os.makedirs(f'{path}/{file_name}')
     #     with open (f'{path}/{file_name}/data.json', 'w') as f:
     #         json.dump(self.info, f, indent="")
+    
     @staticmethod
     def download_raw_data(data_class, path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
