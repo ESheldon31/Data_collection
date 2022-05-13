@@ -52,6 +52,10 @@ class Scraper:
         the item you want to search for
     driver : the Selenium Chrome webdriver that automatically navegates the webpage
 
+    Methods
+    --------------
+
+    # ToDo: finish
     '''
 
 
