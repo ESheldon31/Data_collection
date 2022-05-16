@@ -12,7 +12,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException #, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 #from time import sleep, time
 import time
@@ -31,6 +31,13 @@ from data_template import Data
 # ToDo: finish docstrings for methods
 # ToDo: add type hinting
 
+def no_element_exception_handler(func):
+    def wrapper(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except NoSuchElementException:
+            print(f'{func.__name__} couldn\'t find the element. Check your XPATH.')
+    return wrapper
 
 '''
 This module contains the scraper base class and its methods.
@@ -96,35 +103,48 @@ class Scraper:
 
         '''
         self.driver.get(url)
-    
-    def no_element_exception_handler(func):
-        def wrapper(*args, **kwargs):
-            try:
-                func(*args, **kwargs)
-            except NoSuchElementException:
-                print(f'{func.__name__} couldn\'t find the element. Check your XPATH.')
-        return wrapper
 
+    # @no_element_exception_handler
+    # def search(self, XPATH, search_term):
+    #     search_bar = self.driver.find_element(By.XPATH, XPATH)
+    #     search_bar.click()
+    #     search_bar.send_keys(search_term)
+    #     search_bar.send_keys(u'\ue007')
+    
     @no_element_exception_handler
     def search(self, XPATH):
         search_bar = self.driver.find_element(By.XPATH, XPATH)
         search_bar.click()
         search_bar.send_keys(self.search_term)
         search_bar.send_keys(u'\ue007')
-    
+
     @no_element_exception_handler
     def click_button(self, XPATH):
         button = self.driver.find_element(By.XPATH, XPATH)
         button.click()
 
+    def _wait_for(self, XPATH, click=True, delay=10):
+        try:    
+            WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
+            if click == True:
+                self.click_button(XPATH)
+        except TimeoutException:
+            pass
     def scroll_up_top(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollTop)")
 
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
+    # @no_element_exception_handler
+    # def accept_cookies(self, XPATH):
+    #     self.click_button(XPATH)
+
     @no_element_exception_handler
-    def accept_cookies(self, XPATH):
+    def accept_cookies(self, frame_id, XPATH):
+        if frame_id!=None:
+            self._switch_frame(frame_id)
+        else: pass
         self.click_button(XPATH)
 
     def _switch_frame(self, frame_id):
