@@ -138,7 +138,8 @@ class Scraper:
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
-    def create_empty_dataclass(self):
+    @staticmethod
+    def create_empty_dataclass():
         pass
     # @no_element_exception_handler
     # def accept_cookies(self, XPATH):

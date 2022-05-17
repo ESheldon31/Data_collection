@@ -152,7 +152,8 @@ class LegoScraper(Scraper):
         self.click_button(XPATH1)
         self.click_button(XPATH2)
 
-    def create_empty_dataclass(self):
+    @staticmethod
+    def create_empty_dataclass():
         lego_data = LegoData(
             uuid_list=[], 
             id_list=[], 
