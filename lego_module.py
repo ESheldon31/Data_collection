@@ -152,15 +152,7 @@ class LegoScraper(Scraper):
         self.click_button(XPATH1)
         self.click_button(XPATH2)
 
-    def collect_info(self):
-        '''
-        collects list of links, creates instance of dataclass, for each link appends data to list in dataclass
-
-        Returns:
-            instance of dataclass with all data appended
-
-        '''
-        link_list = self.get_links('//*[@id="search_results"]', './div')
+    def create_empty_dataclass(self):
         lego_data = LegoData(
             uuid_list=[], 
             id_list=[], 
@@ -171,6 +163,29 @@ class LegoScraper(Scraper):
             num_days_remaining_list=[], 
             num_supporters_list=[],
             link_list=None)
+        return lego_data
+
+    def collect_info(self):
+        '''
+        collects list of links, for each link appends data to list in dataclass
+
+        Returns:
+            instance of dataclass with all data appended
+
+        '''
+        
+        link_list = self.get_links('//*[@id="search_results"]', './div')
+        lego_data = self.create_empty_dataclass()
+        # lego_data = LegoData(
+        #     uuid_list=[], 
+        #     id_list=[], 
+        #     img_list=[], 
+        #     date_list=[], 
+        #     creator_list=[], 
+        #     name_list= [], 
+        #     num_days_remaining_list=[], 
+        #     num_supporters_list=[],
+        #     link_list=None)
 
         for link in link_list:
             self.open_url(link)
@@ -193,9 +208,6 @@ class LegoScraper(Scraper):
         runs the various methods to accept cookies, search, collect and download data and images
         '''
         try:
-            # Should be 'button'
-            # self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            # forcing it to throw error with incorrect xpath
             self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
             self.search('//input[@name="query"]')
             lego_data = self.collect_info()

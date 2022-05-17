@@ -1,9 +1,15 @@
 #%%
 import dataclasses
-import selenium
+#import selenium
+import os
+import json
+import csv
+import uuid
+import urllib
+import requests
+import time
 from selenium.webdriver import Chrome
 from webdriver_manager.chrome import ChromeDriverManager
-import requests
 from selenium import webdriver
 # from selenium.webdriver.chrome.service import Service
 # from selenium.webdriver.common import service
@@ -15,18 +21,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.options import Options
 #from time import sleep, time
-import time
 from bs4 import BeautifulSoup as bs
+from abc import ABC, abstractmethod
+
 #import pandas as pd
 from pathlib import Path
-import os
-import json
-import csv
-import uuid
-import urllib
 from data_template import Data
 
-# ToDo: add decorator to elegantly handle error for element not found
+# ToDo: add decorator to elegantly handle errors
 # ToDo: add details of public methods for class
 # ToDo: finish docstrings for methods
 # ToDo: add type hinting
@@ -136,6 +138,8 @@ class Scraper:
     def scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
+    def create_empty_dataclass(self):
+        pass
     # @no_element_exception_handler
     # def accept_cookies(self, XPATH):
     #     self.click_button(XPATH)
