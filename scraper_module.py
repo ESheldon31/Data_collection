@@ -118,7 +118,7 @@ class Scraper:
         search_bar.send_keys(self.search_term)
         search_bar.send_keys(u'\ue007')
 
-    @no_element_exception_handler
+    #@no_element_exception_handler
     def click_button(self, XPATH):
         button = self.driver.find_element(By.XPATH, XPATH)
         button.click()
@@ -174,6 +174,21 @@ class Scraper:
                 break
             last_height = new_height
     
+    # def get_list_links(self, XPATH_container, XPATH_search_results):
+    #     try: 
+    #         search_list = self._container_to_list(XPATH_container, XPATH_search_results)
+    #         link_list = []
+    #         for result in search_list:
+    #             down_tree = result.find_element(By.XPATH, './div')
+    #             down_tree_2 = down_tree.find_element(By.XPATH, './div')
+    #             link = self._get_link(down_tree_2, 'a', 'href')
+    #             link_list.append(link)
+    #         return link_list
+
+    #     except NoSuchElementException:
+    #         print('No results found. Try another search term.')
+    #         self._restart_search()
+
     def get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
             search_list = self._container_to_list(XPATH_container, XPATH_search_results)
@@ -211,7 +226,7 @@ class Scraper:
             img_list.append(individual_img_list)
         return img_list
 
-    @no_element_exception_handler
+    #@no_element_exception_handler
     def _container_to_list(self, XPATH_container, XPATH_items_in_container):
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)

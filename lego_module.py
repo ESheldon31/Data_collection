@@ -1,8 +1,8 @@
 #%%
-from scraper_return_module import Scraper
+from scraper_module import Scraper
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException  #, TimeoutException
 from data_template import LegoData
 
 #ToDo: config file with XPATHs stored in dict
@@ -193,8 +193,11 @@ class LegoScraper(Scraper):
         runs the various methods to accept cookies, search, collect and download data and images
         '''
         try:
+            # Should be 'button'
+            # self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
+            # forcing it to throw error with incorrect xpath
             self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            self.search('//input[@name="que¡ry"]')
+            self.search('//input[@name="query"]')
             lego_data = self.collect_info()
             self.download_raw_data(lego_data)
             self.download_images(lego_data.img_list)
