@@ -177,16 +177,6 @@ class LegoScraper(Scraper):
         
         link_list = self.get_links('//*[@id="search_results"]', './div')
         lego_data = self.create_empty_dataclass()
-        # lego_data = LegoData(
-        #     uuid_list=[], 
-        #     id_list=[], 
-        #     img_list=[], 
-        #     date_list=[], 
-        #     creator_list=[], 
-        #     name_list= [], 
-        #     num_days_remaining_list=[], 
-        #     num_supporters_list=[],
-        #     link_list=None)
 
         for link in link_list:
             self.open_url(link)
@@ -202,6 +192,7 @@ class LegoScraper(Scraper):
                 XPATH_main_image='//div[@class="image-sizing-wrapper"]', 
                 XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', 
                 XPATH_thumbnails='./div')
+        
         return(lego_data)
 
     def scraping_now(self):
