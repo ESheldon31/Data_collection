@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from typing import Optional
+
 
 @dataclass
 class Data:
@@ -8,6 +10,7 @@ class Data:
     link_list: Optional[list]
     img_list: Optional[list]
 
+
 @dataclass
 class LegoData(Data):
     name_list: list
@@ -15,6 +18,7 @@ class LegoData(Data):
     creator_list: list
     num_supporters_list: list
     num_days_remaining_list: list
+
 
 @dataclass
 class CollocationsData(Data):

@@ -1,5 +1,5 @@
 #%%
-from lego_module import LegoScraper
+from Project.Lego_scraper.lego_module import LegoScraper
 
 if __name__ == '__main__': 
 

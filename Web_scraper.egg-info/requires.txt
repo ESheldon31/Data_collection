@@ -1,0 +1,4 @@
+selenium
+dataclasses
+uuid
+requests
