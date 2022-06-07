@@ -27,7 +27,7 @@ class LegoScraper(Scraper):
         '''
         super().__init__(url, search_term, headless)
 
-    def get_links(self, XPATH_container, XPATH_search_results):
+    def _get_links(self, XPATH_container, XPATH_search_results):
         '''
         collects the links to each idea page from the search results 
         uses infinite_scroll to ensure links for all results are collected
@@ -41,17 +41,17 @@ class LegoScraper(Scraper):
         Returns:
             list of links 
         '''
-        self.scroll_down_bottom()
+        self._scroll_down_bottom()
         try:
-            self.see_more('//*[@id="search-more"]/a')
-            self.infinite_scroll()
+            self._see_more('//*[@id="search-more"]/a')
+            self._infinite_scroll()
             pass
         except NoSuchElementException:
             pass
-        list_links = self.get_list_links(XPATH_container, XPATH_search_results)
+        list_links = self._get_list_links(XPATH_container, XPATH_search_results)
         return list_links
 
-    def get_figures(self):
+    def _get_figures(self):
         '''
         collects the numerical information from webpage. 
         
@@ -59,10 +59,10 @@ class LegoScraper(Scraper):
             list of figures(str)
             
         '''
-        numbers = self.find_all_in_html('div', 'class', 'count')
+        numbers = self._find_all_in_html('div', 'class', 'count')
         return numbers
     
-    def get_supporters(self):
+    def _get_supporters(self):
         '''
         finds the number of supporters for each Lego idea
 
@@ -70,11 +70,11 @@ class LegoScraper(Scraper):
             number of supporters
 
         '''
-        supporters = (self.get_figures())[0].text
+        supporters = (self._get_figures())[0].text
         stripped_supporters = supporters.strip()
         return stripped_supporters
 
-    def get_days_remaining(self):
+    def _get_days_remaining(self):
         '''
         finds the number of days the idea has left on the website. 
         This number increases with increasing numbers of supporters.
@@ -83,11 +83,11 @@ class LegoScraper(Scraper):
             number of days remaining
 
         '''
-        days_remaining = (self.get_figures())[1].text
+        days_remaining = (self._get_figures())[1].text
         stripped_days_remaining = days_remaining.strip()
         return stripped_days_remaining
 
-    def get_name(self, link):
+    def _get_name(self, link):
         '''
         finds the idea name for each Lego idea
         
@@ -99,10 +99,10 @@ class LegoScraper(Scraper):
             idea name
 
         '''
-        name = self.find_in_html(link, 'h1', None, None)
+        name = self._find_in_html(link, 'h1', None, None)
         return name
 
-    def get_date(self, link):
+    def _get_date(self, link):
         '''
         for each Lego idea, finds the date it was submitted to the website
         
@@ -114,10 +114,10 @@ class LegoScraper(Scraper):
             date
             
         '''
-        date = self.find_in_html(link, 'span', 'class', 'published-date')
+        date = self._find_in_html(link, 'span', 'class', 'published-date')
         return date
 
-    def get_creator_name(self, link):
+    def _get_creator_name(self, link):
         '''
         finds the creator's name for each Lego idea
         
@@ -129,11 +129,11 @@ class LegoScraper(Scraper):
             creator's name
 
         '''
-        creator_name = self.find_in_html(link, 'a', 'data-axl', 'alias')
+        creator_name = self._find_in_html(link, 'a', 'data-axl', 'alias')
         stripped_creator_name = creator_name.strip()
         return stripped_creator_name
 
-    def create_id(self, link):
+    def _create_id(self, link):
         '''
         creates user-friendly ID for each Lego idea
         
@@ -145,18 +145,18 @@ class LegoScraper(Scraper):
             ID
 
      '''
-        name = self.get_name(link)
-        stripped_creator_name = self.get_creator_name(link)
+        name = self._get_name(link)
+        stripped_creator_name = self._get_creator_name(link)
         ID = f'{name}.{stripped_creator_name}'
         return ID
     
-    def explore_product_ideas(self, XPATH1, XPATH2):
+    def _explore_product_ideas(self, XPATH1, XPATH2):
         #not used. Remove?
-        self.click_button(XPATH1)
-        self.click_button(XPATH2)
+        self._click_button(XPATH1)
+        self._click_button(XPATH2)
 
     @staticmethod
-    def create_empty_dataclass():
+    def _create_empty_dataclass():
         lego_data = LegoData(
             uuid_list=[], 
             id_list=[], 
@@ -169,7 +169,7 @@ class LegoScraper(Scraper):
             link_list=None)
         return lego_data
 
-    def collect_info(self):
+    def _collect_info(self):
         '''
         collects list of links, for each link appends data to list in dataclass
 
@@ -178,20 +178,20 @@ class LegoScraper(Scraper):
 
         '''
         
-        link_list = self.get_links('//*[@id="search_results"]', './div')
-        lego_data = self.create_empty_dataclass()
+        link_list = self._get_links('//*[@id="search_results"]', './div')
+        lego_data = self._create_empty_dataclass()
 
         for link in link_list:
-            self.open_url(link)
+            self._open_url(link)
             self._get_html(link)
-            lego_data.name_list.append(self.get_name(link))
-            lego_data.date_list.append(self.get_date(link))
-            lego_data.creator_list.append(self.get_creator_name(link))
-            lego_data.num_supporters_list.append(self.get_supporters())
-            lego_data.num_days_remaining_list.append(self.get_days_remaining())
-            lego_data.id_list.append(self.create_id(link))
-            lego_data.uuid_list.append(self.create_uuid())
-            lego_data.img_list = self.get_img_links(
+            lego_data.name_list.append(self._get_name(link))
+            lego_data.date_list.append(self._get_date(link))
+            lego_data.creator_list.append(self._get_creator_name(link))
+            lego_data.num_supporters_list.append(self._get_supporters())
+            lego_data.num_days_remaining_list.append(self._get_days_remaining())
+            lego_data.id_list.append(self._create_id(link))
+            lego_data.uuid_list.append(self._create_uuid())
+            lego_data.img_list = self._get_img_links(
                 XPATH_main_image='//div[@class="image-sizing-wrapper"]', 
                 XPATH_thumbnail_container='//div[@class="thumbnails-tray"]', 
                 XPATH_thumbnails='./div')
@@ -203,12 +203,12 @@ class LegoScraper(Scraper):
         runs the various methods to accept cookies, search, collect and download data and images
         '''
         try:
-            self.accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            self.search('//input[@name="query"]')
-            lego_data = self.collect_info()
-            self.download_raw_data(lego_data)
-            self.download_images(lego_data.img_list)
-        finally: self.quit()
+            self._accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
+            self._search('//input[@name="query"]')
+            lego_data = self._collect_info()
+            self._download_raw_data(lego_data)
+            self._download_images(lego_data.img_list)
+        finally: self._quit()
 
 # %%
 

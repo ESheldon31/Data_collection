@@ -94,7 +94,7 @@ class Scraper:
         self.search_term = search_term.upper()
         self.driver.get(self.url)
    
-    def open_url(self, url):
+    def _open_url(self, url):
         '''
         opens the webpage for the url passed as a parameter
         
@@ -114,13 +114,15 @@ class Scraper:
     #     search_bar.send_keys(u'\ue007')
     
     @no_element_exception_handler
-    def search(self, XPATH):
+    def _search(self, XPATH):
+        
         search_bar = self.driver.find_element(By.XPATH, XPATH)
         search_bar.click()
         search_bar.send_keys(self.search_term)
         search_bar.send_keys(u'\ue007')
 
-    def click_button(self, XPATH):
+    def _click_button(self, XPATH):
+        ''''''
         button = self.driver.find_element(By.XPATH, XPATH)
         button.click()
 
@@ -128,72 +130,55 @@ class Scraper:
         try:    
             WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, XPATH)))
             if click == True:
-                self.click_button(XPATH)
+                self._click_button(XPATH)
         except TimeoutException:
             pass
-    def scroll_up_top(self):
+
+    def _scroll_up_top(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollTop)")
 
-    def scroll_down_bottom(self):
+    def _scroll_down_bottom(self):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
     @staticmethod
-    def create_empty_dataclass():
+    def _create_empty_dataclass():
         pass
-    # @no_element_exception_handler
-    # def accept_cookies(self, XPATH):
-    #     self.click_button(XPATH)
 
     @no_element_exception_handler
-    def accept_cookies(self, frame_id, XPATH):
+    def _accept_cookies(self, frame_id, XPATH):
         if frame_id!=None:
             self._switch_frame(frame_id)
         else: pass
-        self.click_button(XPATH)
+        self._click_button(XPATH)
 
     def _switch_frame(self, frame_id):
         self._wait_for(frame_id)
         self.driver.switchTo().frame(frame_id)
    
-    def close_pop_up(self, XPATH):
+    def _close_pop_up(self, XPATH):
         self._wait_for(XPATH)
 
-    def quit(self):
+    def _quit(self):
         self.driver.quit()
 
-    def next_page(self, url):
-        self.open_url(url)
+    def _next_page(self, url):
+        self._open_url(url)
 
-    def see_more(self, XPATH):
+    def _see_more(self, XPATH):
         self.scroll_down_bottom()
-        self.click_button(XPATH)
+        self._click_button(XPATH)
     
-    def infinite_scroll(self):
+    def _infinite_scroll(self):
         last_height = self.driver.execute_script("return document.body.scrollHeight")
         while True:
-            self.scroll_down_bottom()
+            self._scroll_down_bottom()
             time.sleep(3)   
             new_height = self.driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
                 break
             last_height = new_height
-    
-    # def get_list_links(self, XPATH_container, XPATH_search_results):
-    #     try: 
-    #         search_list = self._container_to_list(XPATH_container, XPATH_search_results)
-    #         link_list = []
-    #         for result in search_list:
-    #             down_tree = result.find_element(By.XPATH, './div')
-    #             down_tree_2 = down_tree.find_element(By.XPATH, './div')
-    #             link = self._get_link(down_tree_2, 'a', 'href')
-    #             link_list.append(link)
-    #         return link_list
 
-    #     except NoSuchElementException:
-    #         print('No results found. Try another search term.')
-    #         self._restart_search()
-
-    def get_list_links(self, XPATH_container, XPATH_search_results):
+    def _get_list_links(self, XPATH_container, XPATH_search_results):
         try: 
             search_list = self._container_to_list(XPATH_container, XPATH_search_results)
             link_list = []
@@ -210,9 +195,9 @@ class Scraper:
         self.driver.get(self.url)
         search_term = input('I would like to search for... ')
         self.search_term = search_term.upper()
-        self.search()
+        self._search()
 
-    def get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
+    def _get_img_links(self, XPATH_main_image, XPATH_thumbnail_container, XPATH_thumbnails):
         individual_img_list = []
         img_list = []
         try:
@@ -231,7 +216,7 @@ class Scraper:
         return img_list
 
     #@no_element_exception_handler
-    def _container_to_list(self, XPATH_container, XPATH_items_in_container):
+    def _container_to_list(self, XPATH_container: str, XPATH_items_in_container: str) -> str:
         container = self.driver.find_element(By.XPATH, XPATH_container)
         list_items = container.find_elements(By.XPATH, XPATH_items_in_container)
         return list_items
@@ -241,15 +226,8 @@ class Scraper:
         link = tag.get_attribute(attribute_name)
         return link
 
-    #ToDo: make this decorator and apply to relevant methods
-    def try_append(self, list_to_append_to, items_to_append):
-        try:
-            list_to_append_to.append(items_to_append)
-        except:
-            list_to_append_to.append('N/A')
-
     @staticmethod
-    def create_uuid():
+    def _create_uuid():
         UUID = str(uuid.uuid4())
         return UUID
 
@@ -261,7 +239,7 @@ class Scraper:
         soup = bs(self.driver.page_source, 'html.parser')
         return soup
 
-    def find_in_html(self, url, tag, attribute, attribute_name):
+    def _find_in_html(self, url, tag, attribute, attribute_name):
         r = self._get_html(url)
         soup = bs(r.text, 'html.parser')
         if attribute == None:
@@ -270,7 +248,7 @@ class Scraper:
             element = soup.find(tag, {attribute: attribute_name}).text
         return element
 
-    def find_all_in_html(self, tag, attribute, attribute_name):
+    def _find_all_in_html(self, tag, attribute, attribute_name):
         soup = self._get_html_and_java()
         elements = soup.findAll(tag, {attribute: attribute_name})
         return elements
@@ -282,7 +260,7 @@ class Scraper:
     #         json.dump(self.info, f, indent="")
 
     @staticmethod
-    def download_raw_data(data_class, path='.', file_name='raw_data'):
+    def _download_raw_data(data_class, path='.', file_name='raw_data'):
         if not os.path.exists(f'{path}/{file_name}'):
             os.makedirs(f'{path}/{file_name}')
         with open (f'{path}/{file_name}/data.json', 'w') as f:
@@ -291,7 +269,7 @@ class Scraper:
             print(type(data_class))
             json.dump(data_class, f)
 
-    def download_images(self, img_list, path='.'):
+    def _download_images(self, img_list, path='.'):
         if not os.path.exists(f'{path}/{self.search_term}'):
             os.makedirs(f'{path}/{self.search_term}')
 
