@@ -140,4 +140,12 @@ class CollocationsScraper(Scraper):
             self._download_raw_data(coll_data, file_name='raw_data_coll')
         finally: self._quit()
 
+
+    def scraping_now(self):
+            self._close_pop_up('//div[@class="drift-controller-icon--close"]')
+            self._search('//input[@id="query"]')
+            list_words = self._get_words()
+            coll_data = self._collect_info(list_words)
+            self._download_raw_data(coll_data, file_name='raw_data_coll')
+
 # %%

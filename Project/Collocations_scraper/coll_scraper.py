@@ -8,5 +8,6 @@ if __name__ == '__main__':
         search_term = 'libertad'
         scraper = CollocationsScraper('https://inspirassion.com/es/', search_term)
         scraper.scraping_now()
+        scraper.quit()
     web_scraper_collocations()
 # %%

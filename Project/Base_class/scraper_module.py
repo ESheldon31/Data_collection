@@ -158,14 +158,14 @@ class Scraper:
     def _close_pop_up(self, XPATH):
         self._wait_for(XPATH)
 
-    def _quit(self):
+    def quit(self):
         self.driver.quit()
 
     def _next_page(self, url):
         self._open_url(url)
 
     def _see_more(self, XPATH):
-        self.scroll_down_bottom()
+        self._scroll_down_bottom()
         self._click_button(XPATH)
     
     def _infinite_scroll(self):
@@ -264,9 +264,8 @@ class Scraper:
         if not os.path.exists(f'{path}/{file_name}'):
             os.makedirs(f'{path}/{file_name}')
         with open (f'{path}/{file_name}/data.json', 'w') as f:
-            #data_class.to_json()
             data_class = dataclasses.asdict(data_class)
-            print(type(data_class))
+            #print(type(data_class))
             json.dump(data_class, f)
 
     def _download_images(self, img_list, path='.'):
