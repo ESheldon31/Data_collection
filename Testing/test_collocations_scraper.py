@@ -3,6 +3,7 @@ import json
 from Base_class.scraper_module import Scraper
 from Data_collection.Project.Collocations_scraper.collocations_module import CollocationsScraper
 # todo: refactor so can put in lego scraper too
+# test that values are lists (or null)
 
 def parse(filename):
     try:
@@ -74,6 +75,7 @@ class TestCollocationsScraperOutcome(unittest.TestCase):
         self.assertListEqual(dict_keys, expected_keys)
         print('Data.json has the correct keys.')
 
+#test that values are lists (or null)
     # def test_file_created(self):
     #     # tests that a json is created
     #     self.assertIsInstance(parse('data.json'), dict)
