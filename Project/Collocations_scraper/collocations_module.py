@@ -27,44 +27,44 @@ class CollocationsScraper(Scraper):
         print(list_words)
         return list_words
     
-    def _create_id(self, word_list):
+    def _create_id(self, num_words):
         list_id = []
         list_uuid = []
-        for i in range(len(word_list)):
+        for i in range(num_words):
             id = f'{self.search_term}.{i}'
             list_id.append(id)
             uuid = self._create_uuid()
             list_uuid.append(uuid)
         return [list_id, list_uuid]
 
-    def _get_infinitives(self, list_words):
-        if bool(list_words) == True:
-            list_infinitives = []
-            dictionary_url = f'https://es.thefreedictionary.com/'
-            self.driver.get(dictionary_url)
+    def _get_infinitives(self):
+        list_words = self._get_words()
+        list_infinitives = []
+        dictionary_url = f'https://es.thefreedictionary.com/'
+        self.driver.get(dictionary_url)
+        try:
+            accept_cookies = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div[1]/div/div/div[2]/a[1]')
+            accept_cookies.click()
+        except NoSuchElementException:
+            pass
+        for word in list_words:
             try:
-                accept_cookies = self.driver.find_element(By.XPATH, '/html/body/div[5]/div/div[1]/div/div/div[2]/a[1]')
-                accept_cookies.click()
-            except NoSuchElementException:
-                pass
-            for word in list_words:
                 try:
-                    try:
-                        self._wait_for('//input[@type="search"]')
-                        search_bar = self.driver.find_element(By.XPATH, '//input[@type="search"]')
-                        search_bar.send_keys(word)
-                        search_bar.send_keys(u'\ue007')
-                        infinitive = self.driver.find_element(By.TAG_NAME, 'h1')
-                        list_infinitives.append(infinitive.text)
-                    except:
-                        list_infinitives.append('N/A') 
+                    self._wait_for('//input[@type="search"]')
                     search_bar = self.driver.find_element(By.XPATH, '//input[@type="search"]')
-                    search_bar.clear()
-                except WebDriverException:
-                    pass
-            #print(list_infinitives)
-            return list_infinitives
-        else: print('list_words does not exist')
+                    search_bar.send_keys(word)
+                    search_bar.send_keys(u'\ue007')
+                    infinitive = self.driver.find_element(By.TAG_NAME, 'h1')
+                    list_infinitives.append(infinitive.text)
+                except:
+                    list_infinitives.append('N/A') 
+                search_bar = self.driver.find_element(By.XPATH, '//input[@type="search"]')
+                search_bar.clear()
+            except WebDriverException:
+                pass
+        #print(list_infinitives)
+        return list_infinitives
+    #else: print('list_words does not exist')
     
 
     def _get_frequency_and_phrases(self, word_class, url_mode, tag, attribute, attribute_name):
@@ -81,8 +81,6 @@ class CollocationsScraper(Scraper):
         coll_data = CollocationsData(
             uuid_list=[],
             id_list=[],
-            img_list=None,
-            link_list=None, 
             adj_phrases=[],
             adj_rank_word_frequency=[],
             verb_phrases=[],
@@ -90,7 +88,7 @@ class CollocationsScraper(Scraper):
             infinitive_verb=[])
         return coll_data
 
-    def _collect_info(self, list_words):
+    def _collect_info(self):
 
         coll_data = self._create_empty_dataclass()
         
@@ -122,10 +120,11 @@ class CollocationsScraper(Scraper):
             attribute='class', 
             attribute_name='d-flex flex-wrap justify-content-between align-items-center px-3'
             )
-        coll_data.infinitive_verb = self._get_infinitives(list_words)
-        id_lists = self._create_id(list_words)
+        num_words = len(coll_data.verb_rank_word_frequency)
+        coll_data.infinitive_verb = self._get_infinitives()
+        id_lists = self._create_id(num_words)
         coll_data.id_list = id_lists[0]
-        print(type(coll_data.id_list))
+        #ssprint(type(coll_data.id_list))
         coll_data.uuid_list = id_lists[1]
         
         print(coll_data)
@@ -136,7 +135,7 @@ class CollocationsScraper(Scraper):
             self._close_pop_up('//div[@class="drift-controller-icon--close"]')
             self._search('//input[@id="query"]')
             list_words = self._get_words()
-            coll_data = self._collect_info(list_words)
+            coll_data = self._collect_info()
             self._download_raw_data(coll_data, file_name='raw_data_coll')
         finally: self._quit()
 
@@ -145,7 +144,7 @@ class CollocationsScraper(Scraper):
             self._close_pop_up('//div[@class="drift-controller-icon--close"]')
             self._search('//input[@id="query"]')
             list_words = self._get_words()
-            coll_data = self._collect_info(list_words)
+            coll_data = self._collect_info()
             self._download_raw_data(coll_data, file_name='raw_data_coll')
 
 # %%

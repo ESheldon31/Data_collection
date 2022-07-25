@@ -202,13 +202,13 @@ class LegoScraper(Scraper):
         '''
         runs the various methods to accept cookies, search, collect and download data and images
         '''
-        try:
-            self._accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
-            self._search('//input[@name="query"]')
-            lego_data = self._collect_info()
-            self._download_raw_data(lego_data)
-            self._download_images(lego_data.img_list)
-        finally: self._quit()
+    
+        self._accept_cookies(frame_id=None, XPATH= '//button[@aria-label="Reject cookies"]')
+        self._search('//input[@name="query"]')
+        lego_data = self._collect_info()
+        self._download_raw_data(lego_data)
+        self._download_images(lego_data.img_list)
+
 
 # %%
 

@@ -1,18 +1,18 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from typing import Optional
+#from typing import Optional
 
 
 @dataclass
 class Data:
     uuid_list: list
     id_list: list
-    link_list: Optional[list]
-    img_list: Optional[list]
 
 
 @dataclass
 class LegoData(Data):
+    link_list: list
+    img_list: list
     name_list: list
     date_list: list
     creator_list: list
